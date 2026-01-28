@@ -49,7 +49,6 @@ class Usuario {
 class Proveedor {
   - zona : String
   - horario : String
-  ' opcional: - servicios : List<Servicio>
 }
 
 class Visitante {
@@ -73,14 +72,12 @@ class RepositorioUsuarios {
   - visitantes : List<Visitante>
   - proveedores : List<Proveedor>
   - siguienteIdUsuario : int
-
   + añadirVisitante(v : Visitante)
   + añadirProveedor(p : Proveedor)
   + modificarUsuario(u : Usuario)
   + obtenerVisitantes() : List<Visitante>
   + obtenerProveedores() : List<Proveedor>
   + buscarProveedorPorEmailYClave(email : String, contraseña : String) : Proveedor
-
   ' --- Gestión de IDs ---
   + generarIdUsuario() : int
   + inicializarIdUsuarios()
@@ -89,14 +86,14 @@ class RepositorioUsuarios {
 class RepositorioServicios {
   - servicios : List<Servicio>
   - siguienteIdServicio : int
-
   + agregarServicio(s : Servicio)
   + buscarPorZona(zona : String) : List<Servicio>
   + buscarPorCategoria(categoria : Categoria) : List<Servicio>
+  ' --- Búsqueda por texto (barra de búsqueda) ---
+  + buscarPorTexto(texto : String) : List<Servicio>
   + editarServicio(s : Servicio)
   + eliminarServicio(s : Servicio)
   + obtenerTodos() : List<Servicio>
-
   ' --- Gestión de IDs ---
   + generarIdServicio() : int
   + inicializarIdServicios()
@@ -108,10 +105,9 @@ class RepositorioServicios {
 class PersistenciaArchivo {
   - rutaUsuarios : String
   - rutaServicios : String
-
   + cargarUsuarios(repo : RepositorioUsuarios)
   + guardarUsuarios(repo : RepositorioUsuarios)
-
+  ' en TXT se guarda idProveedor; aquí se reconstruye Servicio->Proveedor al cargar
   + cargarServicios(repoServ : RepositorioServicios, repoUsu : RepositorioUsuarios)
   + guardarServicios(repoServ : RepositorioServicios)
 }
@@ -124,22 +120,22 @@ class ControladorApp {
   - repoServicios  : RepositorioServicios
   - persistencia   : PersistenciaArchivo
   - vistaPrincipal : MainVista
-
   + iniciar()
-  + registrarUsuario()
-  + iniciarSesionProveedor(email, contraseña)
-
+  ' --- Registro separado (según vistas) ---
+  + registrarVisitante()
+  + registrarProveedor()
+  + iniciarSesionProveedor(email : String, contraseña : String)
   + añadirServicio()
   + modificarServicio()
   + eliminarServicio()
-
   + mostrarCatalogo()
   + buscarPorZona(zona : String) : List<Servicio>
   + buscarPorCategoria(cat : Categoria) : List<Servicio>
 
+  ' --- Búsqueda por texto (barra) ---
+  + buscarPorTexto(texto : String) : List<Servicio>
   + verDetalleServicio(serv : Servicio)
   + contactarProveedor(serv : Servicio)
-
   + actualizarPerfilProveedor(p : Proveedor)
   + verServiciosPropios(p : Proveedor) : List<Servicio>
 }
@@ -150,14 +146,11 @@ class ControladorApp {
 class MainVista {
   + mostrarMenuPrincipal()
   + mostrarPantallaInicioSesion()
-
   + mostrarFormularioRegistroVisitante()
   + mostrarFormularioRegistroProveedor()
   + mostrarPantallaLoginProveedor()
-
   + mostrarPanelVisitante(lista : List<Servicio>)
   + mostrarPanelProveedor(lista : List<Servicio>)
-
   + mostrarFormularioServicio(serv : Servicio)
   + mostrarDetalleServicio(serv : Servicio)
   + mostrarPerfilProveedor(p : Proveedor)
