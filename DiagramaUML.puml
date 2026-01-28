@@ -1,0 +1,188 @@
+@startuml
+
+' ===========================
+'       ENUM
+' ===========================
+enum Categoria {
+  ELECTRICIDAD
+  FONTANERIA
+  CARPINTERIA
+  HERRERIA
+  REPARACIONES
+  PINTURA
+  LIMPIEZA
+  JARDINERIA
+  MECANICA
+  FUMIGACION
+  MENSAJERIA
+  DELIVERY
+  MUDANZA
+  CLASES
+  TUTORIA
+  IDIOMAS
+  COMPUTACION
+  DISEÑO
+  FOTOGRAFIA
+  CUIDADO_NINOS
+  CUIDADO_ADULTOS
+  ENFERMERIA
+  PELUQUERIA
+  BARBERIA
+  MANICURA
+  MAQUILLAJE
+  CONTABILIDAD
+  ARQUITECTURA
+  OTROS
+}
+
+' ===========================
+'       CLASES DEL MODELO
+' ===========================
+class Usuario {
+  - idUsuario : int
+  - nombre : String
+  - telefono : String
+  - email : String
+  - contraseña : String
+}
+
+class Proveedor {
+  - zona : String
+  - horario : String
+  ' opcional: - servicios : List<Servicio>
+}
+
+class Visitante {
+}
+
+class Servicio {
+  - idServicio : int
+  - nombre : String
+  - categoria : Categoria
+  - descripcion : String
+  - zona : String
+  - horario : String
+  - proveedor : Proveedor
+  - contacto : String
+}
+
+' ===========================
+'     REPOSITORIOS
+' ===========================
+class RepositorioUsuarios {
+  - visitantes : List<Visitante>
+  - proveedores : List<Proveedor>
+  - siguienteIdUsuario : int
+
+  + añadirVisitante(v : Visitante)
+  + añadirProveedor(p : Proveedor)
+  + modificarUsuario(u : Usuario)
+  + obtenerVisitantes() : List<Visitante>
+  + obtenerProveedores() : List<Proveedor>
+  + buscarProveedorPorEmailYClave(email : String, contraseña : String) : Proveedor
+
+  ' --- Gestión de IDs ---
+  + generarIdUsuario() : int
+  + inicializarIdUsuarios()
+}
+
+class RepositorioServicios {
+  - servicios : List<Servicio>
+  - siguienteIdServicio : int
+
+  + agregarServicio(s : Servicio)
+  + buscarPorZona(zona : String) : List<Servicio>
+  + buscarPorCategoria(categoria : Categoria) : List<Servicio>
+  + editarServicio(s : Servicio)
+  + eliminarServicio(s : Servicio)
+  + obtenerTodos() : List<Servicio>
+
+  ' --- Gestión de IDs ---
+  + generarIdServicio() : int
+  + inicializarIdServicios()
+}
+
+' ===========================
+'   PERSISTENCIA (AUXILIAR)
+' ===========================
+class PersistenciaArchivo {
+  - rutaUsuarios : String
+  - rutaServicios : String
+
+  + cargarUsuarios(repo : RepositorioUsuarios)
+  + guardarUsuarios(repo : RepositorioUsuarios)
+
+  + cargarServicios(repoServ : RepositorioServicios, repoUsu : RepositorioUsuarios)
+  + guardarServicios(repoServ : RepositorioServicios)
+}
+
+' ===========================
+'       CONTROLADOR
+' ===========================
+class ControladorApp {
+  - repoUsuarios   : RepositorioUsuarios
+  - repoServicios  : RepositorioServicios
+  - persistencia   : PersistenciaArchivo
+  - vistaPrincipal : MainVista
+
+  + iniciar()
+  + registrarUsuario()
+  + iniciarSesionProveedor(email, contraseña)
+
+  + añadirServicio()
+  + modificarServicio()
+  + eliminarServicio()
+
+  + mostrarCatalogo()
+  + buscarPorZona(zona : String) : List<Servicio>
+  + buscarPorCategoria(cat : Categoria) : List<Servicio>
+
+  + verDetalleServicio(serv : Servicio)
+  + contactarProveedor(serv : Servicio)
+
+  + actualizarPerfilProveedor(p : Proveedor)
+  + verServiciosPropios(p : Proveedor) : List<Servicio>
+}
+
+' ===========================
+'        VISTA
+' ===========================
+class MainVista {
+  + mostrarMenuPrincipal()
+  + mostrarPantallaInicioSesion()
+
+  + mostrarFormularioRegistroVisitante()
+  + mostrarFormularioRegistroProveedor()
+  + mostrarPantallaLoginProveedor()
+
+  + mostrarPanelVisitante(lista : List<Servicio>)
+  + mostrarPanelProveedor(lista : List<Servicio>)
+
+  + mostrarFormularioServicio(serv : Servicio)
+  + mostrarDetalleServicio(serv : Servicio)
+  + mostrarPerfilProveedor(p : Proveedor)
+
+  + mostrarMensaje(mensaje : String)
+}
+
+' ===========================
+'     RELACIONES (MODELO)
+' ===========================
+Usuario <|-- Proveedor
+Usuario <|-- Visitante
+
+Proveedor "1" o-- "0..*" Servicio : ofrece >
+Servicio "1" --> "1" Proveedor : pertenece a >
+
+RepositorioUsuarios o-- Usuario
+RepositorioServicios o-- Servicio
+
+ControladorApp --> RepositorioUsuarios
+ControladorApp --> RepositorioServicios
+ControladorApp --> PersistenciaArchivo
+ControladorApp --> MainVista
+
+PersistenciaArchivo --> RepositorioUsuarios
+PersistenciaArchivo --> RepositorioServicios
+
+@enduml
