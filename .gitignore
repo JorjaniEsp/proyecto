@@ -1,19 +1,49 @@
-# Compiled class file
+# =================================================================
+# 1. COMPILADOS Y BINARIOS (Java General & Maven)
+# =================================================================
 *.class
-
-out/
-bin/
-
-# Log file
 *.log
+bin/
+out/
+target/
+build/
+dist/
 
-# BlueJ files
+# =================================================================
+# 2. NETBEANS (Específico)
+# =================================================================
+# IMPORTANTE: No ignorar la carpeta 'nbproject' completa, 
+# solo la parte privada y de configuración local.
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+# =================================================================
+# 3. OTROS EDITORES (IntelliJ & VS Code)
+# =================================================================
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code & Visual Studio
+.vscode/
+.vs/
+
+# BlueJ & Otros
 *.ctxt
-
-# Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# =================================================================
+# 4. ARCHIVOS EMPAQUETADOS (Opcional)
+# =================================================================
+# Solo activa estos si no necesitas versionar librerías pesadas
 *.jar
 *.war
 *.nar
@@ -22,21 +52,14 @@ bin/
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# =================================================================
+# 5. LOGS DE ERROR Y SISTEMA
+# =================================================================
+# Java crash logs
 hs_err_pid*
 replay_pid*
 
-# editores
-/.idea
-*.iml
-.vs/
-.vscode/
-
-# --- Maven ---
-target/
-
-# --- Archivos del Sistema Operativo ---
+# Archivos del SO
 .DS_Store
 Thumbs.db
-
-
+desktop.ini
