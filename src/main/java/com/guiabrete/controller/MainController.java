@@ -1,5 +1,4 @@
 package com.guiabrete.controller;
 
-public class X {
-    //borrenla
+public class MainController {
 }

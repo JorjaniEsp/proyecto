@@ -1,5 +1,4 @@
 package com.guiabrete.model;
 
-public class X {
-    //borrenla
+public class Usuario {
 }
