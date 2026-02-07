@@ -3,7 +3,7 @@ package com.guiabrete.model;
 public class Servicio {
     private int idServ;
     private String nombreServ;
-
+    private Categoria categoria;
     private String descripcionServ;
     private String zona;
     private String horario;
@@ -20,57 +20,35 @@ public class Servicio {
         this.contacto = contacto;
     }
 
-    public int getIdServ() {
-        return idServ;
-    }
+    public Categoria getCategoria() { return categoria; }
 
-    public void setIdServ(int idServ) {
-        this.idServ = idServ;
-    }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 
-    public String getNombreServ() {
-        return nombreServ;
-    }
+    public int getIdServ() { return idServ; }
 
-    public void setNombreServ(String nombreServ) {
-        this.nombreServ = nombreServ;
-    }
+    public void setIdServ(int idServ) { this.idServ = idServ; }
 
-    public String getDescripcionServ() {
-        return descripcionServ;
-    }
+    public String getNombreServ() { return nombreServ; }
 
-    public void setDescripcionServ(String descripcionServ) {
-        this.descripcionServ = descripcionServ;
-    }
+    public void setNombreServ(String nombreServ) { this.nombreServ = nombreServ; }
 
-    public String getZona() {
-        return zona;
-    }
+    public String getDescripcionServ() { return descripcionServ; }
 
-    public void setZona(String zona) {
-        this.zona = zona;
-    }
+    public void setDescripcionServ(String descripcionServ) { this.descripcionServ = descripcionServ; }
 
-    public String getHorario() {
-        return horario;
-    }
+    public String getZona() { return zona; }
 
-    public void setHorario(String horario) {
-        this.horario = horario;
-    }
+    public void setZona(String zona) { this.zona = zona; }
 
-    public Proveedor getProveedor() {
-        return proveedor;
-    }
+    public String getHorario() { return horario; }
 
-    public void setProveedor(Proveedor proveedor) {
-        this.proveedor = proveedor;
-    }
+    public void setHorario(String horario) { this.horario = horario; }
 
-    public String getContacto() {
-        return contacto;
-    }
+    public Proveedor getProveedor() { return proveedor; }
+
+    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+
+    public String getContacto() { return contacto; }
 
     public void setContacto(String contacto) { this.contacto = contacto; }
 }
