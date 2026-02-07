@@ -1,4 +1,4 @@
 package com.guiabrete.controller;
 
-public class MainController {
+public class ControladorApp {
 }
