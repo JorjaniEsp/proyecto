@@ -39,6 +39,22 @@ public class RepositorioServicios {
 
     }
 
+    public void eliminarServicio(Servicio servicio){
+
+    }
+
+    public List<Servicio> obtenerTodos(){
+        return null;
+    }
+
+    public int generarIdServicio(){
+        return 0;
+    }
+
+    public void inicializarIdServicio(){
+
+    }
+
 
 
 }
