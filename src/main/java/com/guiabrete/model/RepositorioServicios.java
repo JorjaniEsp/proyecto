@@ -18,4 +18,27 @@ public class RepositorioServicios {
         }
         return instance;
     }
+
+    public void agregarServ(Servicio servicio){
+
+    }
+
+    public List<Servicio> buscarPorZona(String zona){
+        return null;
+    }
+
+    public List<Servicio> buscarPorCategoria(Categoria categoria){
+        return null;
+    }
+
+    public List<Servicio> buscarPorTexto(String texto){
+        return null;
+    }
+
+    public void editarServicio(Servicio servicio){
+
+    }
+
+
+
 }
