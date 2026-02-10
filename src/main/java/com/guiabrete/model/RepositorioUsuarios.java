@@ -11,17 +11,48 @@ public class RepositorioUsuarios {
 
     private static RepositorioUsuarios instance;
 
-    public RepositorioUsuarios() {
+    private RepositorioUsuarios() {
         visitantes = new ArrayList<>();
         proveedores = new ArrayList<>();
     }
 
-    public static synchronized RepositorioUsuarios getInstance(){
-        if(instance == null) {
+    public static synchronized RepositorioUsuarios getInstance() {
+        if (instance == null) {
             instance = new RepositorioUsuarios();
         }
         return instance;
     }
 
+    public void anadirVisitante(Visitante v) {
 
+    }
+
+    public void anadirProveedor(Proveedor p) {
+
+    }
+
+    public void modificarUsuario(Usuario u) {
+
+    }
+
+    public List<Visitante> obtenerVisitante() {
+        return null;
+
+    }
+
+    public List<Proveedor> obtenerProveedor() {
+        return null;
+    }
+
+    public Proveedor buscarProveedorPorEmailYClave(String email, String contrasena) {
+        return null;
+    }
+
+    public int generarIdUsuario() {
+        return 0;
+    }
+
+    public void inicializarIdUsuario() {
+
+    }
 }
