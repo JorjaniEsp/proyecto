@@ -51,4 +51,9 @@ public class Servicio {
     public String getContacto() { return contacto; }
 
     public void setContacto(String contacto) { this.contacto = contacto; }
+
+    @Override
+    public String toString(){
+        return idServ + "\\|" + nombreServ + "\\|" + categoria + "\\|" + descripcionServ + "\\|" + zona + "\\|" + horario + "\\|" + proveedor + "\\|" + contacto;
+    }
 }
