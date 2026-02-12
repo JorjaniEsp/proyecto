@@ -28,4 +28,9 @@ public class Proveedor extends Usuario{
     public void setHorario(String horario) {
         this.horario = horario;
     }
+
+    @Override
+    public String toString() {
+        return getIdUsuario()+ "\\|" + getNombre() + "\\|" + getTelefono() + "\\|" + getEmail() + "\\|" + getContrasenia() + "\\|" + zona + "\\|" + horario;
+    }
 }

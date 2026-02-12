@@ -24,35 +24,64 @@ public class RepositorioUsuarios {
     }
 
     public void anadirVisitante(Visitante v) {
-
+        v.setIdUsuario(generarIdUsuario());
+        visitantes.add(v);
     }
 
     public void anadirProveedor(Proveedor p) {
-
+        p.setIdUsuario(generarIdUsuario());
+        proveedores.add(p);
     }
 
     public void modificarUsuario(Usuario u) {
-
+        if (u instanceof Proveedor) {
+            for (int i = 0; i < proveedores.size(); i++) {
+                if(proveedores.get(i).getIdUsuario() == u.getIdUsuario()){
+                    proveedores.set(i, (Proveedor) u);
+                    return;
+                }
+            }
+        }else if (u instanceof Visitante){
+            for (int i = 0; i < visitantes.size(); i++) {
+                if(visitantes.get(i).getIdUsuario() == u.getIdUsuario()){
+                    visitantes.set(i, (Visitante) u);
+                    return;
+                }
+            }
+        }
     }
 
     public List<Visitante> obtenerVisitante() {
-        return null;
-
+        return visitantes;
     }
 
     public List<Proveedor> obtenerProveedor() {
-        return null;
+        return proveedores;
     }
 
     public Proveedor buscarProveedorPorEmailYClave(String email, String contrasena) {
+        for (Proveedor p : proveedores) {
+            if (p.getEmail().equalsIgnoreCase(email) && p.getContrasenia().equals(contrasena)) {
+                return p;
+            }
+        }
         return null;
     }
 
     public int generarIdUsuario() {
-        return 0;
+        return siguienteIdUsuario++;
     }
 
     public void inicializarIdUsuario() {
+        int maxId = 0;
+        //Vamos a buscar el Id mas alto entre los visitantes
+        for (Visitante v : visitantes) {
+            if (v.getIdUsuario() > maxId) maxId = v.getIdUsuario();
+        }
 
+        for (Proveedor p : proveedores) {
+            if (p.getIdUsuario() > maxId) maxId = p.getIdUsuario();
+        }
+        this.siguienteIdUsuario = maxId + 1;
     }
 }
