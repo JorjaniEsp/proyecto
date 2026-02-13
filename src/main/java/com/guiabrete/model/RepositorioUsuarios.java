@@ -84,4 +84,13 @@ public class RepositorioUsuarios {
         }
         this.siguienteIdUsuario = maxId + 1;
     }
+
+    public Proveedor buscarProveedorPorId(int idABuscar){
+        for(Proveedor proveedor : proveedores){
+            if(proveedor.getIdUsuario() == idABuscar){
+                return proveedor;
+            }
+        }
+        return null;
+    }
 }
