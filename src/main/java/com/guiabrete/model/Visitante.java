@@ -11,6 +11,6 @@ public class Visitante extends Usuario{
 
     @Override
     public String toString() {
-        return getIdUsuario() + "\\|" + getNombre() + "\\|" + getTelefono() + "\\|" + getEmail() + "\\|" + getContrasenia();
+        return "VISITANTE" + "\\|" + getIdUsuario() + "\\|" + getNombre() + "\\|" + getTelefono() + "\\|" + getEmail() + "\\|" + getContrasenia();
     }
 }

@@ -46,7 +46,6 @@ public class RepositorioServicios {
     }
 
     public void editarServicio(Servicio servicio){
-        etiqueta:
         for (Servicio serv : servicios){
             if (serv.equals(servicio)){
                 serv.setNombreServ(servicio.getNombreServ());
@@ -55,7 +54,7 @@ public class RepositorioServicios {
                 serv.setContacto(servicio.getContacto());
                 serv.setHorario(servicio.getHorario());
                 serv.setZona(servicio.getZona());
-                break etiqueta;
+                break;
             }
         }
     }
@@ -76,7 +75,6 @@ public class RepositorioServicios {
 
     public void inicializarIdServicio(){
         int maxId = 0;
-
         for (Servicio s : servicios) {
             if (s.getIdServ() > maxId) {
                 maxId = s.getIdServ();
@@ -84,4 +82,5 @@ public class RepositorioServicios {
         }
         this.siguienteIdServ = maxId + 1;
     }
+
 }

@@ -10,9 +10,10 @@ public class Servicio {
     private Proveedor proveedor;
     private String contacto;
 
-    public Servicio(int idServ, String nombreServ, String descripcionServ, String zona, String horario, Proveedor proveedor, String contacto) {
+    public Servicio(int idServ, String nombreServ,Categoria categoria, String descripcionServ, String zona, String horario, Proveedor proveedor, String contacto) {
         this.idServ = idServ;
         this.nombreServ = nombreServ;
+        this.categoria = categoria;
         this.descripcionServ = descripcionServ;
         this.zona = zona;
         this.horario = horario;
@@ -54,6 +55,6 @@ public class Servicio {
 
     @Override
     public String toString(){
-        return idServ + "\\|" + nombreServ + "\\|" + categoria + "\\|" + descripcionServ + "\\|" + zona + "\\|" + horario + "\\|" + proveedor + "\\|" + contacto;
+        return idServ + "\\|" + nombreServ + "\\|" + categoria + "\\|" + descripcionServ + "\\|" + zona + "\\|" + horario + "\\|" + proveedor.getIdUsuario() + "\\|" + contacto;
     }
 }
