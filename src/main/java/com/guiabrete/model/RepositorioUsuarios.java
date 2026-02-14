@@ -1,5 +1,6 @@
 package com.guiabrete.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,14 @@ public class RepositorioUsuarios {
     private List<Visitante> visitantes;
     private List<Proveedor> proveedores;
     private int siguienteIdUsuario;
+    private PersistenciaArchivo archivo;
 
     private static RepositorioUsuarios instance;
 
     private RepositorioUsuarios() {
         visitantes = new ArrayList<>();
         proveedores = new ArrayList<>();
+        archivo = PersistenciaArchivo.getInstance();
     }
 
     public static synchronized RepositorioUsuarios getInstance() {
@@ -33,22 +36,23 @@ public class RepositorioUsuarios {
         proveedores.add(p);
     }
 
-    public void modificarUsuario(Usuario u) {
+    public void modificarUsuario(Usuario u) throws IOException {
         if (u instanceof Proveedor) {
             for (int i = 0; i < proveedores.size(); i++) {
                 if(proveedores.get(i).getIdUsuario() == u.getIdUsuario()){
                     proveedores.set(i, (Proveedor) u);
-                    return;
+                    break;
                 }
             }
         }else if (u instanceof Visitante){
             for (int i = 0; i < visitantes.size(); i++) {
                 if(visitantes.get(i).getIdUsuario() == u.getIdUsuario()){
                     visitantes.set(i, (Visitante) u);
-                    return;
+                    break;
                 }
             }
         }
+        archivo.guardarUsuarios(instance);
     }
 
     public List<Visitante> obtenerVisitante() {

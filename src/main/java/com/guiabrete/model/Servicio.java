@@ -18,7 +18,7 @@ public class Servicio {
         this.zona = zona;
         this.horario = horario;
         this.proveedor = proveedor;
-        this.contacto = contacto;
+        this.contacto = formatearParaWhatsApp(contacto);
     }
 
     public Categoria getCategoria() { return categoria; }
@@ -53,8 +53,14 @@ public class Servicio {
 
     public void setContacto(String contacto) { this.contacto = contacto; }
 
+    private String formatearParaWhatsApp(String tel) {
+        if (tel == null) return "";
+        String soloNumeros = tel.replaceAll("[^0-9]", "");
+        return (soloNumeros.length() == 8) ? "506" + soloNumeros : soloNumeros;
+    }
+
     @Override
     public String toString(){
-        return idServ + "\\|" + nombreServ + "\\|" + categoria + "\\|" + descripcionServ + "\\|" + zona + "\\|" + horario + "\\|" + proveedor.getIdUsuario() + "\\|" + contacto;
+        return idServ + "|" + nombreServ + "|" + categoria + "|" + descripcionServ + "|" + zona + "|" + horario + "|" + proveedor.getIdUsuario() + "|" + contacto;
     }
 }

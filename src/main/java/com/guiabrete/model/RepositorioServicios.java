@@ -1,5 +1,6 @@
 package com.guiabrete.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,11 @@ public class RepositorioServicios {
     private List<Servicio> servicios;
     private int siguienteIdServ;
     private static RepositorioServicios instance;
+    private PersistenciaArchivo archivo;
 
     private RepositorioServicios(){
         servicios = new ArrayList<>();
+        archivo = PersistenciaArchivo.getInstance();
     }
 
     public static synchronized RepositorioServicios getInstance() {
@@ -45,7 +48,7 @@ public class RepositorioServicios {
         }
     }
 
-    public void editarServicio(Servicio servicio){
+    public void editarServicio(Servicio servicio) throws IOException {
         for (Servicio serv : servicios){
             if (serv.equals(servicio)){
                 serv.setNombreServ(servicio.getNombreServ());
@@ -57,12 +60,14 @@ public class RepositorioServicios {
                 break;
             }
         }
+        archivo.guardarServicios(instance);
     }
 
-    public void eliminarServicio(Servicio servicio) {
+    public void eliminarServicio(Servicio servicio) throws IOException {
         if (servicio != null) {
             servicios.remove(servicio);
         }
+        archivo.guardarServicios(instance);
     }
 
     public List<Servicio> obtenerTodos(){
