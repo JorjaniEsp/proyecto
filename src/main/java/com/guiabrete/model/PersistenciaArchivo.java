@@ -75,7 +75,7 @@ public class PersistenciaArchivo {
         }
     }
 
-    public void cargarServicios(RepositorioServicios repoServicios, RepositorioUsuarios repoUsuarios) throws IOException {
+    public void cargarServicios(RepositorioServicios repoServicios, RepositorioUsuarios repoUsuarios) throws IOException, GuiaBreteException {
         if (servicios.exists()) {
             try (BufferedReader lector = new BufferedReader(new FileReader(servicios))) {
                 String linea;
@@ -94,6 +94,8 @@ public class PersistenciaArchivo {
                 }
             } catch (IOException | IllegalArgumentException e) {
                 throw new IOException("Error al cargar servicios: " + e.getMessage());
+            } catch (GuiaBreteException e) {
+                throw new GuiaBreteException(e.getMessage());
             }
         }
     }

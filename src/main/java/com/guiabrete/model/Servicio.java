@@ -10,7 +10,23 @@ public class Servicio {
     private Proveedor proveedor;
     private String contacto;
 
-    public Servicio(int idServ, String nombreServ,Categoria categoria, String descripcionServ, String zona, String horario, Proveedor proveedor, String contacto) {
+    public Servicio(int idServ, String nombreServ, Categoria categoria, String descripcionServ,
+                    String zona, String horario, Proveedor proveedor, String contacto)
+            throws GuiaBreteException {
+
+        if (nombreServ == null || nombreServ.isBlank()) throw new DatosIncompletosException("Nombre");
+        if (descripcionServ == null || descripcionServ.isBlank()) throw new DatosIncompletosException("Descripción");
+        if (zona == null || zona.isBlank()) throw new DatosIncompletosException("Zona");
+        if (categoria == null) throw new DatosIncompletosException("Categoría");
+        if (proveedor == null) throw new DatosIncompletosException("Proveedor");
+
+        String soloNumeros = (contacto != null) ? contacto.replaceAll("[^0-9]", "") : "";
+
+        if (soloNumeros.length() != 8) {
+            throw new ContactoInvalidoException();
+        }
+
+
         this.idServ = idServ;
         this.nombreServ = nombreServ;
         this.categoria = categoria;
@@ -18,7 +34,8 @@ public class Servicio {
         this.zona = zona;
         this.horario = horario;
         this.proveedor = proveedor;
-        this.contacto = formatearParaWhatsApp(contacto);
+
+        this.contacto = "506" + soloNumeros;
     }
 
     public Categoria getCategoria() { return categoria; }
