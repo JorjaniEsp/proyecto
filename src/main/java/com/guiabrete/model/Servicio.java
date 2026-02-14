@@ -26,7 +26,6 @@ public class Servicio {
             throw new ContactoInvalidoException();
         }
 
-
         this.idServ = idServ;
         this.nombreServ = nombreServ;
         this.categoria = categoria;
@@ -69,12 +68,6 @@ public class Servicio {
     public String getContacto() { return contacto; }
 
     public void setContacto(String contacto) { this.contacto = contacto; }
-
-    private String formatearParaWhatsApp(String tel) {
-        if (tel == null) return "";
-        String soloNumeros = tel.replaceAll("[^0-9]", "");
-        return (soloNumeros.length() == 8) ? "506" + soloNumeros : soloNumeros;
-    }
 
     @Override
     public String toString(){

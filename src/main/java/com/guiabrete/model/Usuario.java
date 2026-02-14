@@ -10,11 +10,20 @@ public class Usuario {
 
     public Usuario() {
     }
-    public Usuario(int idUsuario, String nombre, String telefono, String email, String contrasenia) {
+    public Usuario(int idUsuario, String nombre, String telefono, String email, String contrasenia) throws GuiaBreteException {
+
+        if (nombre == null || nombre.isBlank()) throw new DatosIncompletosException("Nombre");
+        if (email == null || email.isBlank()) throw new DatosIncompletosException("Correo");
+        if (contrasenia == null || contrasenia.isBlank()) throw new DatosIncompletosException("Contraseña");
+
+        if (!email.contains("@") || !email.substring(email.indexOf("@")).contains(".")) {
+            throw new EmailInvalidoException();
+        }
+
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.telefono = telefono;
-        this.email = email;
+        this.email = email.toLowerCase().trim();
         this.contrasenia = contrasenia;
     }
 

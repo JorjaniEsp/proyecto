@@ -27,7 +27,7 @@ public class PersistenciaArchivo {
         return instance;
     }
 
-    public void cargarUsurios(RepositorioUsuarios repoUsuarios) throws IOException {
+    public void cargarUsurios(RepositorioUsuarios repoUsuarios) throws IOException, GuiaBreteException {
         if (usuarios.exists()) {
             try (BufferedReader lector = new BufferedReader(new FileReader(usuarios))) {
                 String linea;
@@ -53,6 +53,8 @@ public class PersistenciaArchivo {
                 }
             } catch (IOException e) {
                 throw new IOException("Error al cargar usuarios: " + e.getMessage());
+            } catch (GuiaBreteException e){
+                throw new GuiaBreteException(e.getMessage());
             }
         }
     }

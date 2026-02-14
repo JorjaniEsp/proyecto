@@ -7,7 +7,7 @@ public class Proveedor extends Usuario{
     public Proveedor() {
     }
 
-    public Proveedor(int idUsuario, String nombre, String telefono, String email, String contrasenia,  String zona, String horario) {
+    public Proveedor(int idUsuario, String nombre, String telefono, String email, String contrasenia,  String zona, String horario) throws GuiaBreteException {
         super(idUsuario, nombre, telefono, email, contrasenia);
         this.zona = zona;
         this.horario = horario;
