@@ -31,6 +31,6 @@ public class Proveedor extends Usuario{
 
     @Override
     public String toString() {
-        return getIdUsuario()+ "\\|" + getNombre() + "\\|" + getTelefono() + "\\|" + getEmail() + "\\|" + getContrasenia() + "\\|" + zona + "\\|" + horario;
+        return "PROVEEDOR" + "\\|" + getIdUsuario()+ "\\|" + getNombre() + "\\|" + getTelefono() + "\\|" + getEmail() + "\\|" + getContrasenia() + "\\|" + zona + "\\|" + horario;
     }
 }
