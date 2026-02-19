@@ -2,6 +2,7 @@ package com.guiabrete.view;
 
 import com.guiabrete.controller.ControladorApp;
 import com.guiabrete.model.Servicio;
+import com.guiabrete.model.Proveedor; // Importante para perfil
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,13 @@ public class MainVista extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel contenedor;
-    private ControladorApp controlador; // Referencia al controlador
+    private ControladorApp controlador;
+
+    // --- REFERENCIAS A PANELES DINÁMICOS ---
+    // Necesitamos esto para poder decirles "¡Muestra estos datos!"
+    private PanelPrincipalVisitante panelVisitante;
+    private PanelDetalleServicio panelDetalle;
+    private PanelProveedor panelProveedor;
 
     public MainVista() {
         setTitle("Sistema de Servicios - Guía Brete");
@@ -22,38 +29,36 @@ public class MainVista extends JFrame {
         cardLayout = new CardLayout();
         contenedor = new JPanel(cardLayout);
 
-        // --- AGREGAR PANELES ---
-        // Asegúrate de que estas clases existen en tu paquete view
+        // 1. Paneles Estáticos (No cambian mucho)
         contenedor.add(new InicioSesionPanel(this), "inicio");
         contenedor.add(new InicioSesionProveedorPanel(this), "inicioProveedor");
         contenedor.add(new RegistroVisitantePanel(this), "registroVisitante");
         contenedor.add(new RegistroProveedorPanel(this), "registroProveedor");
-
-        // Paneles principales
-        contenedor.add(new PanelPrincipalVisitante(this), "panelVisitante");
-        contenedor.add(new PanelProveedor(this), "panelProveedor");
-
-        // Paneles de gestión de servicios
         contenedor.add(new PanelAnadirServicio(this), "anadirServicio");
         contenedor.add(new PanelModificarServicio(this), "modificarServicio");
-        contenedor.add(new PanelDetalleServicio(this), "detalleServicio");
 
-        // Panel perfil (Si ya creaste la clase PanelPerfilProveedor, descomenta esta línea)
-        // contenedor.add(new PanelPerfilProveedor(this), "perfilProveedor");
+        // 2. Paneles Dinámicos (Los creamos y guardamos en variable)
+        panelVisitante = new PanelPrincipalVisitante(this);
+        contenedor.add(panelVisitante, "panelVisitante");
+
+        panelDetalle = new PanelDetalleServicio(this);
+        contenedor.add(panelDetalle, "detalleServicio");
+
+        panelProveedor = new PanelProveedor(this);
+        contenedor.add(panelProveedor, "panelProveedor");
+
+        // Si ya tienes el perfil:
+        // panelPerfil = new PanelPerfilProveedor(this);
+        // contenedor.add(panelPerfil, "perfilProveedor");
 
         add(contenedor);
-
-        // Iniciar en la pantalla de bienvenida
         cardLayout.show(contenedor, "inicio");
     }
 
     // --- MÉTODOS DE NAVEGACIÓN ---
-
     public void cambiarVista(String nombreVista) {
         cardLayout.show(contenedor, nombreVista);
     }
-
-    // --- CONEXIÓN CON CONTROLADOR ---
 
     public void setControlador(ControladorApp controlador) {
         this.controlador = controlador;
@@ -63,31 +68,41 @@ public class MainVista extends JFrame {
         return controlador;
     }
 
-    // --- MÉTODOS DE INTERACCIÓN (Para quitar los errores del Controlador) ---
-
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
-    // Este método es llamado por el controlador para actualizar la lista del visitante
+    // --- MÉTODOS DE DATOS (Aquí está la magia) ---
+
+    // 1. Mostrar Catálogo con datos reales
     public void mostrarPanelVisitante(List<Servicio> listaServicios) {
-        // Obtenemos el panel (esto asume que ya fue agregado al contenedor)
-        // NOTA: Para que esto funcione al 100%, PanelPrincipalVisitante necesitará un método "cargarDatos"
-        // Por ahora, solo cambiamos la vista para que no de error de compilación.
+        if (panelVisitante != null) {
+            panelVisitante.cargarServicios(listaServicios);
+        }
         cambiarVista("panelVisitante");
     }
 
-    // Método para mostrar servicios del proveedor (Fase 2)
+    // 2. Mostrar Detalle (Soluciona el error de tu imagen)
+    public void mostrarDetalleServicio(Servicio servicio) {
+        if (panelDetalle != null) {
+            panelDetalle.mostrarDetalle(servicio);
+        }
+        cambiarVista("detalleServicio");
+    }
+
+    // 3. Mostrar Dashboard Proveedor
     public void mostrarPanelProveedor(List<Servicio> listaServicios) {
-        // Pendiente de implementar la tabla en PanelProveedor
+        // if (panelProveedor != null) panelProveedor.cargarMisServicios(listaServicios);
         cambiarVista("panelProveedor");
     }
 
-    // --- MAIN PARA PRUEBAS VISUALES ---
+    // 4. Perfil
+    public void mostrarPerfilProveedor(Proveedor p) {
+        // if (panelPerfil != null) panelPerfil.cargarDatos(p);
+        // cambiarVista("perfilProveedor");
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainVista v = new MainVista();
-            v.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new MainVista().setVisible(true));
     }
 }
