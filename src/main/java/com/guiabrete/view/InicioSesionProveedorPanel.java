@@ -7,19 +7,18 @@ import java.awt.*;
 public class InicioSesionProveedorPanel extends JPanel {
     private JTextField txtEmail;
     private JPasswordField txtPassword;
-    private JButton btnLogin, btnVolver;
+    private JButton btnLoginProv, btnLoginVis, btnVolver;
     private MainVista ventana;
 
     public InicioSesionProveedorPanel(MainVista ventana) {
         this.ventana = ventana;
-        setLayout(new GridBagLayout()); // Para centrar el formulario de login
+        setLayout(new GridBagLayout());
         setBackground(EstiloUI.MANZANA_50);
 
         initLoginCard();
     }
 
     private void initLoginCard() {
-        // Contenedor tipo "Tarjeta" blanca
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);
@@ -28,8 +27,7 @@ public class InicioSesionProveedorPanel extends JPanel {
                 new EmptyBorder(30, 40, 30, 40)
         ));
 
-        // Título e Icono [cite: 3, 214]
-        JLabel lblTitulo = new JLabel("Ingreso de Proveedor");
+        JLabel lblTitulo = new JLabel("¡Bienvenido de vuelta!");
         lblTitulo.setFont(EstiloUI.FONT_TITULO);
         lblTitulo.setForeground(EstiloUI.MANZANA_900);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -37,7 +35,6 @@ public class InicioSesionProveedorPanel extends JPanel {
         card.add(lblTitulo);
         card.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        // Campo: Correo
         card.add(crearEtiquetaInterna("Correo Electrónico:"));
         txtEmail = EstiloUI.crearInput();
         txtEmail.setMaximumSize(new Dimension(300, 35));
@@ -45,7 +42,6 @@ public class InicioSesionProveedorPanel extends JPanel {
 
         card.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        // Campo: Contraseña
         card.add(crearEtiquetaInterna("Contraseña:"));
         txtPassword = new JPasswordField();
         txtPassword.setBackground(EstiloUI.MANZANA_100);
@@ -59,21 +55,50 @@ public class InicioSesionProveedorPanel extends JPanel {
 
         card.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // Botones
-        btnLogin = EstiloUI.crearBoton("INICIAR SESIÓN");
-        btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnLogin.setMaximumSize(new Dimension(300, 40));
+        // --- BOTONES DIVIDIDOS ---
+        btnLoginProv = EstiloUI.crearBoton("ENTRAR COMO PROVEEDOR");
+        btnLoginProv.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnLoginProv.setMaximumSize(new Dimension(300, 40));
+
+        btnLoginVis = EstiloUI.crearBoton("ENTRAR COMO VISITANTE");
+        btnLoginVis.setBackground(EstiloUI.MANZANA_600); // Diferenciamos el color
+        btnLoginVis.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnLoginVis.setMaximumSize(new Dimension(300, 40));
 
         btnVolver = EstiloUI.crearBoton("VOLVER AL MENÚ");
         btnVolver.setBackground(EstiloUI.MANZANA_900);
         btnVolver.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnVolver.setMaximumSize(new Dimension(300, 40));
 
-        card.add(btnLogin);
+        // --- CABLEADO ---
+        btnVolver.addActionListener(e -> {
+            limpiarCampos();
+            ventana.cambiarVista("inicio");
+        });
+
+        // Evento para el Proveedor
+        btnLoginProv.addActionListener(e -> {
+            if (validarCampos()) {
+                ventana.getControlador().iniciarSesionProveedor(txtEmail.getText(), new String(txtPassword.getPassword()));
+                limpiarCampos();
+            }
+        });
+
+        // Evento para el Visitante
+        btnLoginVis.addActionListener(e -> {
+            if (validarCampos()) {
+                ventana.getControlador().iniciarSesionVisitante(txtEmail.getText(), new String(txtPassword.getPassword()));
+                limpiarCampos();
+            }
+        });
+
+        card.add(btnLoginProv);
+        card.add(Box.createRigidArea(new Dimension(0, 10)));
+        card.add(btnLoginVis);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(btnVolver);
 
-        add(card); // Añade la tarjeta al GridBagLayout central
+        add(card);
     }
 
     private JLabel crearEtiquetaInterna(String texto) {
@@ -84,16 +109,16 @@ public class InicioSesionProveedorPanel extends JPanel {
         return lbl;
     }
 
-    // Métodos para el controlador
-    public JButton getBtnLogin() { return btnLogin; }
-    public JButton getBtnVolver() { return btnVolver; }
-
-    public String getEmail() { return txtEmail.getText(); }
-    public String getPassword() { return new String(txtPassword.getPassword()); }
+    private boolean validarCampos() {
+        if (txtEmail.getText().isEmpty() || new String(txtPassword.getPassword()).isEmpty()) {
+            ventana.mostrarMensaje("Por favor, ingresa tu correo y contraseña.");
+            return false;
+        }
+        return true;
+    }
 
     public void limpiarCampos() {
         txtEmail.setText("");
         txtPassword.setText("");
     }
 }
-

@@ -49,50 +49,63 @@ public class PanelModificarServicio extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 15, 10, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
         // --- FILA 1: NOMBRE Y CATEGORÍA ---
         gbc.gridx = 0; gbc.gridy = 0;
         pnlCampos.add(new JLabel("NOMBRE DEL SERVICIO:"), gbc);
+
         gbc.gridx = 1;
         txtNombre = EstiloUI.crearInput();
+        txtNombre.setPreferredSize(new Dimension(200, 35));
         pnlCampos.add(txtNombre, gbc);
 
         gbc.gridx = 2;
         pnlCampos.add(new JLabel("CATEGORÍA:"), gbc);
+
         gbc.gridx = 3;
         cbCategoria = new JComboBox<>(Categoria.values());
         cbCategoria.setBackground(EstiloUI.MANZANA_100);
+        cbCategoria.setPreferredSize(new Dimension(200, 35));
         pnlCampos.add(cbCategoria, gbc);
 
         // --- FILA 2: ZONA Y CONTACTO ---
         gbc.gridx = 0; gbc.gridy = 1;
         pnlCampos.add(new JLabel("ZONA DE TRABAJO:"), gbc);
+
         gbc.gridx = 1;
         txtZona = EstiloUI.crearInput();
+        txtZona.setPreferredSize(new Dimension(200, 35));
         pnlCampos.add(txtZona, gbc);
 
         gbc.gridx = 2;
         pnlCampos.add(new JLabel("TELÉFONO CONTACTO:"), gbc);
+
         gbc.gridx = 3;
         txtContacto = EstiloUI.crearInput();
+        txtContacto.setPreferredSize(new Dimension(200, 35));
         pnlCampos.add(txtContacto, gbc);
 
         // --- FILA 3: HORARIO ---
         gbc.gridx = 0; gbc.gridy = 2;
         pnlCampos.add(new JLabel("HORARIO DE TRABAJO:"), gbc);
+
         gbc.gridx = 1; gbc.gridwidth = 3;
         txtHorario = EstiloUI.crearInput();
+        txtHorario.setPreferredSize(new Dimension(200, 35));
         pnlCampos.add(txtHorario, gbc);
 
         // --- FILA 4: DESCRIPCIÓN ---
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
         pnlCampos.add(new JLabel("DESCRIPCIÓN:"), gbc);
+
         gbc.gridx = 1; gbc.gridwidth = 3;
         txtDescripcion = new JTextArea(4, 20);
         txtDescripcion.setLineWrap(true);
         txtDescripcion.setWrapStyleWord(true);
         txtDescripcion.setBorder(BorderFactory.createLineBorder(EstiloUI.MANZANA_500));
         txtDescripcion.setBackground(EstiloUI.MANZANA_100);
+        txtDescripcion.setFont(EstiloUI.FONT_TEXTO);
         pnlCampos.add(new JScrollPane(txtDescripcion), gbc);
 
         // --- BOTONES ---
@@ -103,6 +116,33 @@ public class PanelModificarServicio extends JPanel {
         btnCancelar.setBackground(EstiloUI.MANZANA_900);
 
         btnGuardar = EstiloUI.crearBoton("GUARDAR CAMBIOS");
+
+        // ==========================================
+        // CABLEADO: Los botones cobran vida
+        // ==========================================
+
+        btnCancelar.addActionListener(e -> {
+            ventana.cambiarVista("panelProveedor");
+        });
+
+        btnGuardar.addActionListener(e -> {
+            String nombre = txtNombre.getText().trim();
+            Categoria cat = (Categoria) cbCategoria.getSelectedItem();
+            String zona = txtZona.getText().trim();
+            String contacto = txtContacto.getText().trim();
+            String horario = txtHorario.getText().trim();
+            String desc = txtDescripcion.getText().trim();
+
+            if (nombre.isEmpty() || zona.isEmpty() || contacto.isEmpty() || horario.isEmpty() || desc.isEmpty()) {
+                ventana.mostrarMensaje("Por favor, no deje campos en blanco.");
+                return;
+            }
+
+            if (ventana.getControlador() != null && servicioAEditar != null) {
+                // Se envía todo al controlador para que lo procese y lo guarde en TXT
+                ventana.getControlador().modificarServicio(servicioAEditar, nombre, desc, cat, zona, horario, contacto);
+            }
+        });
 
         pnlBotones.add(btnCancelar);
         pnlBotones.add(btnGuardar);
@@ -129,20 +169,14 @@ public class PanelModificarServicio extends JPanel {
         cbCategoria.setSelectedItem(s.getCategoria());
         txtZona.setText(s.getZona());
         txtHorario.setText(s.getHorario());
-        txtContacto.setText(s.getContacto());
+
+        // Limpiamos el código "506" visualmente si está para que sea más fácil de editar
+        String tel = s.getContacto();
+        if(tel != null && tel.startsWith("506")) {
+            tel = tel.substring(3);
+        }
+        txtContacto.setText(tel);
+
         txtDescripcion.setText(s.getDescripcionServ());
     }
-
-    // Getters para Angely (Controlador) [cite: 236]
-    public JButton getBtnGuardar() { return btnGuardar; }
-    public JButton getBtnCancelar() { return btnCancelar; }
-    public Servicio getServicioAEditar() { return servicioAEditar; }
-
-    // Getters de los campos actualizados
-    public String getNombre() { return txtNombre.getText(); }
-    public Categoria getCategoria() { return (Categoria) cbCategoria.getSelectedItem(); }
-    public String getZona() { return txtZona.getText(); }
-    public String getHorario() { return txtHorario.getText(); }
-    public String getContacto() { return txtContacto.getText(); }
-    public String getDescripcion() { return txtDescripcion.getText(); }
 }

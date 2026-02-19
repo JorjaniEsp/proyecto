@@ -8,12 +8,12 @@ public class RegistroProveedorPanel extends JPanel {
     private JTextField txtNombre, txtTelefono, txtEmail, txtZona, txtHorario;
     private JPasswordField txtPassword;
     private JButton btnRegistrar, btnVolver;
-    private MainVista ventana; // [cite: 242]
+    private MainVista ventana;
 
     public RegistroProveedorPanel(MainVista ventana) {
         this.ventana = ventana;
         setLayout(new BorderLayout());
-        setBackground(EstiloUI.MANZANA_50); //
+        setBackground(EstiloUI.MANZANA_50);
         setBorder(new EmptyBorder(30, 50, 30, 50));
 
         initHeader();
@@ -24,12 +24,13 @@ public class RegistroProveedorPanel extends JPanel {
         JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setOpaque(false);
 
-        // Logo y Título [cite: 3, 30]
+        // Logo
         JLabel lblLogo = new JLabel("Guía-Brete");
         lblLogo.setFont(EstiloUI.FONT_TITULO);
         lblLogo.setForeground(EstiloUI.MANZANA_900);
 
-        JLabel lblAccion = new JLabel("REGISTRO DE NUEVO PROVEEDOR", SwingConstants.RIGHT);
+        // Título más amigable
+        JLabel lblAccion = new JLabel("ÚNETE COMO PROVEEDOR", SwingConstants.RIGHT);
         lblAccion.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblAccion.setForeground(EstiloUI.MANZANA_600);
 
@@ -46,21 +47,25 @@ public class RegistroProveedorPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(12, 12, 12, 12);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0; // Ayuda a distribuir el espacio equitativamente
 
         // --- COLUMNA 1 ---
         txtNombre = agregarCampo(pnlCampos, "Nombre Completo:", 0, 0, gbc);
         txtEmail = agregarCampo(pnlCampos, "Correo Electrónico:", 1, 0, gbc);
 
-        // Password con estilo unificado
+        // Password con estilo unificado y TAMAÑO ARREGLADO
         gbc.gridx = 0; gbc.gridy = 2;
         pnlCampos.add(new JLabel("Contraseña:"), gbc);
+
         txtPassword = new JPasswordField();
         txtPassword.setBackground(EstiloUI.MANZANA_100);
         txtPassword.setFont(EstiloUI.FONT_TEXTO);
+        txtPassword.setPreferredSize(new Dimension(250, 35)); // <--- ¡Esto evita que se vea enano!
         txtPassword.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(EstiloUI.MANZANA_500, 1),
                 new EmptyBorder(5, 10, 5, 10)
         ));
+
         gbc.gridx = 1;
         pnlCampos.add(txtPassword, gbc);
 
@@ -77,6 +82,31 @@ public class RegistroProveedorPanel extends JPanel {
         btnVolver.setBackground(EstiloUI.MANZANA_900);
 
         btnRegistrar = EstiloUI.crearBoton("CREAR CUENTA");
+
+        // ==========================================
+        // CABLEADO: Los botones cobran vida
+        // ==========================================
+        btnVolver.addActionListener(e -> ventana.cambiarVista("inicio"));
+
+        btnRegistrar.addActionListener(e -> {
+            String nombre = txtNombre.getText();
+            String email = txtEmail.getText();
+            String pass = new String(txtPassword.getPassword());
+            String tel = txtTelefono.getText();
+            String zona = txtZona.getText();
+            String horario = txtHorario.getText();
+
+            // Validación visual rápida
+            if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty() || tel.isEmpty() || zona.isEmpty() || horario.isEmpty()) {
+                ventana.mostrarMensaje("Todos los campos son obligatorios para unirte.");
+                return;
+            }
+
+            // Enviar datos al cerebro
+            if (ventana.getControlador() != null) {
+                ventana.getControlador().registrarProveedor(nombre, tel, zona, horario, email, pass);
+            }
+        });
 
         pnlBotones.add(btnVolver);
         pnlBotones.add(btnRegistrar);
@@ -98,11 +128,10 @@ public class RegistroProveedorPanel extends JPanel {
 
         gbc.gridx = columna + 1;
         JTextField txt = EstiloUI.crearInput();
+        txt.setPreferredSize(new Dimension(250, 35)); // <--- ¡Arreglo clave para que deje escribir bien!
         panel.add(txt, gbc);
         return txt;
     }
-
-    // --- MÉTODOS INDISPENSABLES ---
 
     public void limpiarCampos() {
         txtNombre.setText("");
@@ -112,15 +141,4 @@ public class RegistroProveedorPanel extends JPanel {
         txtHorario.setText("");
         txtPassword.setText("");
     }
-
-    // Getters para el controlador
-    public JButton getBtnRegistrar() { return btnRegistrar; }
-    public JButton getBtnVolver() { return btnVolver; }
-
-    public String getNombre() { return txtNombre.getText(); }
-    public String getEmail() { return txtEmail.getText(); }
-    public String getPassword() { return new String(txtPassword.getPassword()); }
-    public String getZona() { return txtZona.getText(); }
-    public String getHorario() { return txtHorario.getText(); }
-    public String getTelefono() { return txtTelefono.getText(); }
 }

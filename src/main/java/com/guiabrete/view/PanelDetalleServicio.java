@@ -10,7 +10,6 @@ public class PanelDetalleServicio extends JPanel {
 
     private MainVista ventana;
 
-    // Componentes que se actualizarán dinámicamente
     private JLabel lblNombreServicio;
     private JLabel lblProveedor;
     private JLabel lblZona;

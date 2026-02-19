@@ -19,6 +19,7 @@ public class MainVista extends JFrame {
     private PanelPrincipalVisitante panelVisitante;
     private PanelDetalleServicio panelDetalle;
     private PanelProveedor panelProveedor;
+    private PanelPerfilProveedor panelPerfil;
 
     public MainVista() {
         setTitle("Sistema de Servicios - Guía Brete");
@@ -48,8 +49,8 @@ public class MainVista extends JFrame {
         contenedor.add(panelProveedor, "panelProveedor");
 
         // Si ya tienes el perfil:
-        // panelPerfil = new PanelPerfilProveedor(this);
-        // contenedor.add(panelPerfil, "perfilProveedor");
+        panelPerfil = new PanelPerfilProveedor(this);
+        contenedor.add(panelPerfil, "perfilProveedor");
 
         add(contenedor);
         cardLayout.show(contenedor, "inicio");
@@ -92,14 +93,14 @@ public class MainVista extends JFrame {
 
     // 3. Mostrar Dashboard Proveedor
     public void mostrarPanelProveedor(List<Servicio> listaServicios) {
-        // if (panelProveedor != null) panelProveedor.cargarMisServicios(listaServicios);
+        if (panelProveedor != null) panelProveedor.cargarMisServicios(listaServicios);
         cambiarVista("panelProveedor");
     }
 
-    // 4. Perfil
+
     public void mostrarPerfilProveedor(Proveedor p) {
-        // if (panelPerfil != null) panelPerfil.cargarDatos(p);
-        // cambiarVista("perfilProveedor");
+        if (panelPerfil != null) panelPerfil.cargarDatosPerfil(p);
+        cambiarVista("perfilProveedor");
     }
 
     public static void main(String[] args) {

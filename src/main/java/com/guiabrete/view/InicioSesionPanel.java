@@ -54,7 +54,7 @@ public class InicioSesionPanel extends JPanel {
         // A. LOGO
         JLabel logoLabel = new JLabel();
         // Carga de imagen segura
-        String rutaImagen = "C:\\Users\\josse\\Cursos\\proyecto\\src\\WhatsApp Image 2026-02-09 at 6.28.49 PM.jpeg";
+        String rutaImagen = "src/logo.jpeg";
         ImageIcon iconoOriginal = new ImageIcon(rutaImagen);
         if (iconoOriginal.getIconWidth() > 0) {
             Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
@@ -67,7 +67,7 @@ public class InicioSesionPanel extends JPanel {
         // Nota: En el diagrama "Iniciar proveedor" está en el centro. Como a la izquierda ya pusimos el Login ("Ya tengo cuenta"),
         // asumimos que este botón central es para REGISTRARSE (Nuevo proveedor).
         JButton btnRegistroProv = EstiloUI.crearBoton("QUIERO SER PROVEEDOR");
-        JButton btnVisitante = EstiloUI.crearBoton("INICIAR VISITANTE");
+        JButton btnVisitante = EstiloUI.crearBoton("REGISTRARSE COMO VISITANTE");
         JButton btnInvitado = EstiloUI.crearBoton("ENTRAR COMO INVITADO");
 
         // Acciones

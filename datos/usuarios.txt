@@ -1,0 +1,4 @@
+PROVEEDOR|0|Juan Lopéz|62000129|lopez@gmail.com|01|Pueblo nuevo|Lunes - Sabado de 6am - 5pm
+VISITANTE|1|Karla Gonzales|87313142|karla@gmail.com|01
+VISITANTE|2|Cristofer Pereira|00000000|cris@gmail.com|01
+VISITANTE|3|Daniel Fajardo|73010222|daniel@gmail.com|01

@@ -6,6 +6,7 @@ import com.guiabrete.view.MainVista;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ControladorApp {
 
@@ -32,15 +33,12 @@ public class ControladorApp {
     // --- 3. INICIALIZACIÓN DEL SISTEMA ---
     public void iniciar() {
         try {
-            // 1. Cargar Usuarios del TXT
             persistencia.cargarUsurios(repoUsuarios);
             repoUsuarios.inicializarIdUsuario();
 
-            // 2. Cargar Servicios del TXT (Requiere usuarios cargados para vincular al proveedor)
-            // persistencia.cargarServicios(repoServicios, repoUsuarios); // Descomentar cuando tengas datos en servicios.txt
+            // Descomentado: Ya podemos cargar los servicios porque los usuarios existen
+            persistencia.cargarServicios(repoServicios, repoUsuarios);
             repoServicios.inicializarIdServicio();
-
-            System.out.println("Datos cargados correctamente.");
             vistaPrincipal.setVisible(true);
 
         } catch (IOException | GuiaBreteException e) {
@@ -54,10 +52,7 @@ public class ControladorApp {
 
     public void registrarProveedor(String nombre, String contacto, String zona, String horario, String email, String password) {
         try {
-            // Crear objeto (Validaciones ocurren dentro del constructor del modelo)
             Proveedor nuevo = new Proveedor(0, nombre, contacto, email, password, zona, horario);
-
-            // Guardar en memoria y archivo
             repoUsuarios.anadirProveedor(nuevo);
             persistencia.guardarUsuarios(repoUsuarios);
 
@@ -88,20 +83,22 @@ public class ControladorApp {
         if (p != null) {
             this.usuarioLogueado = p;
             vistaPrincipal.mostrarMensaje("Bienvenido, " + p.getNombre());
-            vistaPrincipal.cambiarVista("panelProveedor");
-
-            // AQUÍ: Cargar la lista de "Mis Servicios" en la vista (Falta implementar en vista)
-            // cargarMisServicios();
+            cargarMisServicios(); // Muestra el dashboard con los datos
         } else {
             vistaPrincipal.mostrarMensaje("Credenciales incorrectas o usuario no encontrado.");
         }
     }
 
     public void iniciarSesionVisitante(String email, String password) {
-        // Lógica similar para visitante (puedes implementarla si el visitante requiere login)
-        // Por requerimiento, el visitante puede consultar sin registrarse, pero si se registra, aquí va el login.
-        vistaPrincipal.cambiarVista("panelVisitante");
-        mostrarCatalogoCompleto();
+        Visitante v = repoUsuarios.buscarVisitantePorEmailYClave(email, password);
+        if (v != null) {
+            this.usuarioLogueado = v;
+            vistaPrincipal.mostrarMensaje("Bienvenido, " + v.getNombre());
+            vistaPrincipal.cambiarVista("panelVisitante");
+            mostrarCatalogoCompleto();
+        } else {
+            vistaPrincipal.mostrarMensaje("Credenciales incorrectas o usuario no encontrado.");
+        }
     }
 
     public void cerrarSesion() {
@@ -113,18 +110,18 @@ public class ControladorApp {
     //                            REGIÓN: SERVICIOS (PROVEEDOR)
     // =========================================================================
 
-    public void anadirServicio(String nombre, String descripcion, Categoria cat) {
+    public void anadirServicio(String nombre, String descripcion, Categoria cat, String zona, String horario, String contacto) {
         if (usuarioLogueado instanceof Proveedor) {
             Proveedor miPerfil = (Proveedor) usuarioLogueado;
             try {
-                // Usamos la zona y horario del perfil del proveedor por defecto
-                Servicio nuevo = new Servicio(0, nombre, cat, descripcion, miPerfil.getZona(), miPerfil.getHorario(), miPerfil, miPerfil.getTelefono());
+                // Ahora usamos los datos específicos que el usuario escribió en la ventana
+                Servicio nuevo = new Servicio(0, nombre, cat, descripcion, zona, horario, miPerfil, contacto);
 
                 repoServicios.agregarServ(nuevo);
                 persistencia.guardarServicios(repoServicios);
 
                 vistaPrincipal.mostrarMensaje("Servicio publicado exitosamente.");
-                vistaPrincipal.cambiarVista("panelProveedor");
+                cargarMisServicios(); // Recargar la tabla y volver al panel
 
             } catch (GuiaBreteException | IOException e) {
                 vistaPrincipal.mostrarMensaje("Error al guardar servicio: " + e.getMessage());
@@ -132,11 +129,66 @@ public class ControladorApp {
         }
     }
 
+    // NUEVO: Método para modificar un servicio existente
+    public void modificarServicio(Servicio servicioActual, String nuevoNombre, String nuevaDesc, Categoria nuevaCat, String nuevaZona, String nuevoHorario, String nuevoContacto) {
+        try {
+            servicioActual.setNombreServ(nuevoNombre);
+            servicioActual.setDescripcionServ(nuevaDesc);
+            servicioActual.setCategoria(nuevaCat);
+            servicioActual.setZona(nuevaZona);
+            servicioActual.setHorario(nuevoHorario);
+            servicioActual.setContacto(nuevoContacto);
+
+            repoServicios.editarServicio(servicioActual); // El repo ya guarda en TXT internamente
+
+            vistaPrincipal.mostrarMensaje("Servicio actualizado exitosamente.");
+            cargarMisServicios(); // Volver al panel proveedor recargado
+
+        } catch (IOException e) {
+            vistaPrincipal.mostrarMensaje("Error al actualizar: " + e.getMessage());
+        }
+    }
+
+    // NUEVO: Método para eliminar un servicio
+    public void eliminarServicio(Servicio servicio) {
+        try {
+            repoServicios.eliminarServicio(servicio);
+            vistaPrincipal.mostrarMensaje("Servicio eliminado.");
+            cargarMisServicios();
+        } catch (IOException e) {
+            vistaPrincipal.mostrarMensaje("Error al eliminar: " + e.getMessage());
+        }
+    }
+
     public void cargarMisServicios() {
         if (usuarioLogueado instanceof Proveedor) {
-            // Filtrar servicios donde el proveedor soy yo
-            // List<Servicio> misServicios = repoServicios.buscarPorProveedor(...)
-            // vistaPrincipal.actualizarTablaMisServicios(misServicios);
+            int miId = usuarioLogueado.getIdUsuario();
+
+            // Filtramos la lista para obtener solo los de este proveedor
+            List<Servicio> misServicios = repoServicios.obtenerTodos().stream()
+                    .filter(s -> s.getProveedor().getIdUsuario() == miId)
+                    .collect(Collectors.toList());
+
+            vistaPrincipal.mostrarPanelProveedor(misServicios);
+        }
+    }
+
+    // NUEVO: Actualizar el perfil del proveedor
+    public void actualizarPerfilProveedor(String telefono, String zona, String horario) {
+        if (usuarioLogueado instanceof Proveedor) {
+            Proveedor p = (Proveedor) usuarioLogueado;
+            try {
+                p.setTelefono(telefono);
+                p.setZona(zona);
+                p.setHorario(horario);
+
+                repoUsuarios.modificarUsuario(p);
+                vistaPrincipal.mostrarMensaje("Perfil actualizado exitosamente.");
+                cargarMisServicios(); // Volver al dashboard
+
+            } catch (IOException e) {
+                vistaPrincipal.mostrarMensaje("Error al guardar perfil: " + e.getMessage());
+            }
         }
     }
 
@@ -157,5 +209,21 @@ public class ControladorApp {
     public void buscarPorCategoria(Categoria cat) {
         List<Servicio> resultados = repoServicios.buscarPorCategoria(cat);
         vistaPrincipal.mostrarPanelVisitante(resultados);
+    }
+
+    public void buscarPorTexto(String texto) {
+        List<Servicio> resultados = repoServicios.buscarPorTexto(texto);
+        vistaPrincipal.mostrarPanelVisitante(resultados);
+    }
+
+    public void verDetalleServicio(Servicio s) {
+        if (vistaPrincipal != null) {
+            vistaPrincipal.mostrarDetalleServicio(s);
+        }
+    }
+    public void verPerfil() {
+        if (usuarioLogueado instanceof Proveedor) {
+            vistaPrincipal.mostrarPerfilProveedor((Proveedor) usuarioLogueado);
+        }
     }
 }

@@ -22,7 +22,7 @@ public class Servicio {
 
         String soloNumeros = (contacto != null) ? contacto.replaceAll("[^0-9]", "") : "";
 
-        if (soloNumeros.length() != 8) {
+        if (soloNumeros.length() > 11 || soloNumeros.length() < 8) {
             throw new ContactoInvalidoException();
         }
 
@@ -33,8 +33,11 @@ public class Servicio {
         this.zona = zona;
         this.horario = horario;
         this.proveedor = proveedor;
-
-        this.contacto = "506" + soloNumeros;
+        if (soloNumeros.length() == 11){
+            this.contacto = soloNumeros;
+        } else if (soloNumeros.length() == 8) {
+            this.contacto = "506" + soloNumeros;
+        }
     }
 
     public Categoria getCategoria() {

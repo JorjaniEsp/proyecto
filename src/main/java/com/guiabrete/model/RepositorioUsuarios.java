@@ -55,6 +55,15 @@ public class RepositorioUsuarios {
         archivo.guardarUsuarios(instance);
     }
 
+    public Visitante buscarVisitantePorEmailYClave(String email, String contrasena) {
+        for (Visitante v : visitantes) {
+            if (v.getEmail().equalsIgnoreCase(email) && v.getContrasenia().equals(contrasena)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
     public List<Visitante> obtenerVisitante() {
         return visitantes;
     }

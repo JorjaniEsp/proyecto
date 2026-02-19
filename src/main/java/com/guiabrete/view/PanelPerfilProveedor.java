@@ -1,6 +1,6 @@
 package com.guiabrete.view;
 
-import com.guiabrete.model.Proveedor; // [cite: 234]
+import com.guiabrete.model.Proveedor;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 public class PanelPerfilProveedor extends JPanel {
     private JTextField txtNombre, txtTelefono, txtEmail, txtZona, txtHorario;
     private JButton btnGuardar, btnVolver;
-    private MainVista ventana; //
+    private MainVista ventana;
     private Proveedor proveedorActual;
 
     public PanelPerfilProveedor(MainVista ventana) {
@@ -46,13 +46,18 @@ public class PanelPerfilProveedor extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
         // --- DATOS PERSONALES ---
         txtNombre = agregarCampo(pnlCampos, "NOMBRE COMPLETO:", 0, 0, gbc);
+        txtNombre.setEnabled(false); // Bloqueado por seguridad
+
         txtEmail = agregarCampo(pnlCampos, "CORREO ELECTRÓNICO:", 1, 0, gbc);
+        txtEmail.setEnabled(false); // Bloqueado por seguridad
+
         txtTelefono = agregarCampo(pnlCampos, "TELÉFONO / WHATSAPP:", 2, 0, gbc);
 
-        // --- DATOS DE SERVICIO --- [cite: 75, 147]
+        // --- DATOS DE SERVICIO ---
         txtZona = agregarCampo(pnlCampos, "ZONA DE TRABAJO:", 0, 2, gbc);
         txtHorario = agregarCampo(pnlCampos, "HORARIO DE ATENCIÓN:", 1, 2, gbc);
 
@@ -64,6 +69,27 @@ public class PanelPerfilProveedor extends JPanel {
         btnVolver.setBackground(EstiloUI.MANZANA_900);
 
         btnGuardar = EstiloUI.crearBoton("GUARDAR PERFIL");
+
+        // ==========================================
+        // CABLEADO: Los botones cobran vida
+        // ==========================================
+        btnVolver.addActionListener(e -> ventana.cambiarVista("panelProveedor"));
+
+        btnGuardar.addActionListener(e -> {
+            String tel = txtTelefono.getText().trim();
+            String zona = txtZona.getText().trim();
+            String horario = txtHorario.getText().trim();
+
+            if (tel.isEmpty() || zona.isEmpty() || horario.isEmpty()) {
+                ventana.mostrarMensaje("Teléfono, Zona y Horario no pueden quedar vacíos.");
+                return;
+            }
+
+            if (ventana.getControlador() != null) {
+                // Mandamos a actualizar (El controlador ya tiene este método listo)
+                ventana.getControlador().actualizarPerfilProveedor(tel, zona, horario);
+            }
+        });
 
         pnlAcciones.add(btnVolver);
         pnlAcciones.add(btnGuardar);
@@ -86,6 +112,7 @@ public class PanelPerfilProveedor extends JPanel {
 
         gbc.gridx = columna + 1;
         JTextField txt = EstiloUI.crearInput();
+        txt.setPreferredSize(new Dimension(250, 35)); // <-- Arregla el aplastamiento
         panel.add(txt, gbc);
         return txt;
     }
@@ -94,27 +121,12 @@ public class PanelPerfilProveedor extends JPanel {
         this.proveedorActual = p;
         txtNombre.setText(p.getNombre());
         txtEmail.setText(p.getEmail());
-        txtTelefono.setText(p.getTelefono());
+
+        String tel = p.getTelefono();
+        if(tel != null && tel.startsWith("506")) tel = tel.substring(3);
+        txtTelefono.setText(tel);
+
         txtZona.setText(p.getZona());
         txtHorario.setText(p.getHorario());
-        txtEmail.setEnabled(false); // No se permite cambiar el ID [cite: 154]
     }
-
-    public void limpiarCampos() {
-        txtNombre.setText("");
-        txtEmail.setText("");
-        txtTelefono.setText("");
-        txtZona.setText("");
-        txtHorario.setText("");
-    }
-
-    // Getters para Angely (Controlador) [cite: 236]
-    public JButton getBtnGuardar() { return btnGuardar; }
-    public JButton getBtnVolver() { return btnVolver; }
-
-    // Getters para extraer la información actualizada [cite: 75, 204]
-    public String getNombre() { return txtNombre.getText(); }
-    public String getTelefono() { return txtTelefono.getText(); }
-    public String getZona() { return txtZona.getText(); }
-    public String getHorario() { return txtHorario.getText(); }
 }
