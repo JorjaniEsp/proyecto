@@ -37,40 +37,72 @@ public class Servicio {
         this.contacto = "506" + soloNumeros;
     }
 
-    public Categoria getCategoria() { return categoria; }
+    public Categoria getCategoria() {
+        return categoria;
+    }
 
-    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
-    public int getIdServ() { return idServ; }
+    public int getIdServ() {
+        return idServ;
+    }
 
-    public void setIdServ(int idServ) { this.idServ = idServ; }
+    public void setIdServ(int idServ) {
+        this.idServ = idServ;
+    }
 
-    public String getNombreServ() { return nombreServ; }
+    public String getNombreServ() {
+        return nombreServ;
+    }
 
-    public void setNombreServ(String nombreServ) { this.nombreServ = nombreServ; }
+    public void setNombreServ(String nombreServ) {
+        this.nombreServ = nombreServ;
+    }
 
-    public String getDescripcionServ() { return descripcionServ; }
+    public String getDescripcionServ() {
+        return descripcionServ;
+    }
 
-    public void setDescripcionServ(String descripcionServ) { this.descripcionServ = descripcionServ; }
+    public void setDescripcionServ(String descripcionServ) {
+        this.descripcionServ = descripcionServ;
+    }
 
-    public String getZona() { return zona; }
+    public String getZona() {
+        return zona;
+    }
 
-    public void setZona(String zona) { this.zona = zona; }
+    public void setZona(String zona) {
+        this.zona = zona;
+    }
 
-    public String getHorario() { return horario; }
+    public String getHorario() {
+        return horario;
+    }
 
-    public void setHorario(String horario) { this.horario = horario; }
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
 
-    public Proveedor getProveedor() { return proveedor; }
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
 
-    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+    }
 
-    public String getContacto() { return contacto; }
+    public String getContacto() {
+        return contacto;
+    }
 
-    public void setContacto(String contacto) { this.contacto = contacto; }
+    public void setContacto(String contacto) {
+        this.contacto = contacto;
+    }
 
     @Override
-    public String toString(){
+    public String toString() {
         return idServ + "|" + nombreServ + "|" + categoria + "|" + descripcionServ + "|" + zona + "|" + horario + "|" + proveedor.getIdUsuario() + "|" + contacto;
     }
 }
