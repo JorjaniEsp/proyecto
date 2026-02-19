@@ -1,1 +1,12 @@
-0|Reparador de abanicos de hogar|ELECTRICIDAD|Reparo y doy mantenimiento a abanicos de uso domestico|Limón centro|De lunes a sabado, de 9am a 5pm|0|50662000129
+0|Reparador de abanicos de hogar|ELECTRICIDAD|Reparo y doy mantenimiento a abanicos de uso domestico.|Limón centro|De lunes a sabado, de 9am a 5pm|0|50662000129
+1|Reparación de laptops y PC|COMPUTACION|Reparacion, limpieza, mantenimiento e instalacion de programas.|Pueblo nuevo|De sabado a domingo de 6am a 7pm|0|50662000129
+2|Fontanero de emergencias|FONTANERIA|Arreglo de fugas de agua, cambio de grifos y destape de cañerías.|Cieneguita|24/7 para emergencias|0|50662000129
+3|Aseo y limpieza profunda|LIMPIEZA|Servicio de limpieza completa para casas, apartamentos y oficinas.|Corales 1 y 2|Lunes a Viernes 8am a 4pm|0|50662000129
+4|Chapea y poda de árboles|JARDINERIA|Mantenimiento de zonas verdes, corte de zacate y recolección de basura verde.|Moín|Fines de semana de 6am a 12md|0|50662000129
+5|Pintor de interiores y rejas|PINTURA|Acabados de pintura en paredes, techos y tratamiento anticorrosivo para verjas.|Barrio Roosevelt|Lunes a Sábado 7am a 5pm|0|50662000129
+6|Barbero a domicilio|BARBERIA|Cortes modernos, delineado de barba y cejas en la comodidad de tu hogar.|Limón centro|Martes a Domingo 10am a 8pm|0|50662000129
+7|Clases de Matemáticas|TUTORIA|Tutorías para estudiantes de colegio y preparación para bachillerato.|Limón centro|Lunes a Jueves de 4pm a 7pm|0|50662000129
+8|Fletes y acarreos|MUDANZA|Camión cerrado para transporte de muebles y electrodomésticos de forma segura.|Todo Limón|Lunes a Domingo 6am a 6pm|0|50662000129
+9|Mecánico a domicilio|MECANICA|Revisión de frenos, cambios de aceite, suspensión y escáner automotriz.|Barrio Los Cocos|Lunes a Viernes 8am a 5pm|0|50662000129
+10|Sesiones de fotos|FOTOGRAFIA|Fotografía profesional para cumpleaños, quinceaños y eventos sociales.|Limón centro|Sábados y Domingos (Con cita)|0|50662000129
+11|Muebles a la medida|CARPINTERIA|Fabricación de roperos, camas, mesas y reparación de muebles de madera.|Pueblo Nuevo|Lunes a Sábado 8am a 4pm|0|50662000129

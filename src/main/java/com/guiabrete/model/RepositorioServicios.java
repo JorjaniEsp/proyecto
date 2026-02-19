@@ -40,12 +40,25 @@ public class RepositorioServicios {
             return servicios.stream().filter(serv -> serv.getCategoria().equals(categoria)).toList();
     }
 
-    public List<Servicio> buscarPorTexto(String texto){
-        if (texto.isBlank()){
+    public List<Servicio> buscarPorTexto(String texto) {
+        if (texto == null || texto.isBlank()) {
             return servicios;
-        } else {
-            return servicios.stream().filter(serv -> serv.getDescripcionServ().toLowerCase().contains(texto.toLowerCase())).toList();
         }
+        String[] palabrasBuscadas = texto.toLowerCase().split("\\s+");
+
+        return servicios.stream().filter(serv -> {
+
+            String textoServicio = serv.getNombreServ().toLowerCase() + " " + serv.getDescripcionServ().toLowerCase();
+
+            int coincidencias = 0;
+
+            for (String palabra : palabrasBuscadas) {
+                if (palabra.length() > 2 && textoServicio.contains(palabra)) {
+                    coincidencias++;
+                }
+            }
+            return coincidencias > 0;
+        }).toList();
     }
 
     public void editarServicio(Servicio servicio) throws IOException {
