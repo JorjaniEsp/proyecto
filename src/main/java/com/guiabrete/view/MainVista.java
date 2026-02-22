@@ -14,8 +14,6 @@ public class MainVista extends JFrame {
     private JPanel contenedor;
     private ControladorApp controlador;
 
-    // --- REFERENCIAS A PANELES DINÁMICOS ---
-    // Necesitamos esto para poder decirles "¡Muestra estos datos!"
     private PanelPrincipalVisitante panelVisitante;
     private PanelDetalleServicio panelDetalle;
     private PanelProveedor panelProveedor;

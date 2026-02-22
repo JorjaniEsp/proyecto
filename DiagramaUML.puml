@@ -1,38 +1,31 @@
 @startuml
+skinparam classAttributeIconSize 0
+
+' ===========================
+'       EXCEPCIONES
+' ===========================
+class GuiaBreteException <<Exception>>
+class ContactoInvalidoException
+class DatosIncompletosException
+class EmailInvalidoException
+class UsuarioDuplicadoException
+
+GuiaBreteException <|--- ContactoInvalidoException
+GuiaBreteException <|--- DatosIncompletosException
+GuiaBreteException <|--- EmailInvalidoException
+GuiaBreteException <|--- UsuarioDuplicadoException
 
 ' ===========================
 '       ENUM
 ' ===========================
 enum Categoria {
-  ELECTRICIDAD
-  FONTANERIA
-  CARPINTERIA
-  HERRERIA
-  REPARACIONES
-  PINTURA
-  LIMPIEZA
-  JARDINERIA
-  MECANICA
-  FUMIGACION
-  MENSAJERIA
-  DELIVERY
-  MUDANZA
-  CLASES
-  TUTORIA
-  IDIOMAS
-  COMPUTACION
-  DISEÑO
-  FOTOGRAFIA
-  CUIDADO_NINOS
-  CUIDADO_ADULTOS
-  ENFERMERIA
-  PELUQUERIA
-  BARBERIA
-  MANICURA
-  MAQUILLAJE
-  CONTABILIDAD
-  ARQUITECTURA
-  OTROS
+  ELECTRICIDAD, FONTANERIA, CARPINTERIA, HERRERIA,
+  REPARACIONES, PINTURA, LIMPIEZA, JARDINERIA,
+  MECANICA, FUMIGACION, MENSAJERIA, DELIVERY,
+  MUDANZA, CLASES, TUTORIA, IDIOMAS, COMPUTACION,
+  DISENIO, FOTOGRAFIA, CUIDADO_NINOS, CUIDADO_ADULTOS,
+  ENFERMERIA, PELUQUERIA, BARBERIA, MANICURA,
+  MAQUILLAJE, CONTABILIDAD, ARQUITECTURA, OTROS
 }
 
 ' ===========================
@@ -43,7 +36,7 @@ class Usuario {
   - nombre : String
   - telefono : String
   - email : String
-  - contraseña : String
+  - contrasenia : String
 }
 
 class Proveedor {
@@ -55,59 +48,54 @@ class Visitante {
 }
 
 class Servicio {
-  - idServicio : int
-  - nombre : String
+  - idServ : int
+  - nombreServ : String
   - categoria : Categoria
-  - descripcion : String
+  - descripcionServ : String
   - zona : String
   - horario : String
-  - proveedor : Proveedor
   - contacto : String
 }
 
 ' ===========================
-'     REPOSITORIOS
+'     REPOSITORIOS (SINGLETON)
 ' ===========================
-class RepositorioUsuarios {
+class RepositorioUsuarios <<Singleton>> {
   - visitantes : List<Visitante>
   - proveedores : List<Proveedor>
   - siguienteIdUsuario : int
-  + añadirVisitante(v : Visitante)
-  + añadirProveedor(p : Proveedor)
+  + {static} getInstance() : RepositorioUsuarios
+  + anadirVisitante(v : Visitante)
+  + anadirProveedor(p : Proveedor)
   + modificarUsuario(u : Usuario)
-  + obtenerVisitantes() : List<Visitante>
-  + obtenerProveedores() : List<Proveedor>
-  + buscarProveedorPorEmailYClave(email : String, contraseña : String) : Proveedor
-  ' --- Gestión de IDs ---
-  + generarIdUsuario() : int
-  + inicializarIdUsuarios()
+  + buscarProveedorPorEmailYClave(email : String, clave : String) : Proveedor
+  + buscarVisitantePorEmailYClave(email : String, clave : String) : Visitante
+  + buscarProveedorPorId(id : int) : Proveedor
 }
 
-class RepositorioServicios {
+class RepositorioServicios <<Singleton>> {
   - servicios : List<Servicio>
-  - siguienteIdServicio : int
-  + agregarServicio(s : Servicio)
+  - siguienteIdServ : int
+  + {static} getInstance() : RepositorioServicios
+  + agregarServ(s : Servicio)
   + buscarPorZona(zona : String) : List<Servicio>
   + buscarPorCategoria(categoria : Categoria) : List<Servicio>
-  ' --- Búsqueda por texto (barra de búsqueda) ---
   + buscarPorTexto(texto : String) : List<Servicio>
   + editarServicio(s : Servicio)
   + eliminarServicio(s : Servicio)
   + obtenerTodos() : List<Servicio>
-  ' --- Gestión de IDs ---
-  + generarIdServicio() : int
-  + inicializarIdServicios()
 }
 
 ' ===========================
-'   PERSISTENCIA (AUXILIAR)
+'   PERSISTENCIA (SINGLETON)
 ' ===========================
-class PersistenciaArchivo {
-  - rutaUsuarios : String
-  - rutaServicios : String
+class PersistenciaArchivo <<Singleton>> {
+  - carpeta : File
+  - usuarios : File
+  - servicios : File
+  + {static} getInstance() : PersistenciaArchivo
   + cargarUsuarios(repo : RepositorioUsuarios)
   + guardarUsuarios(repo : RepositorioUsuarios)
-  ' en TXT se guarda idProveedor; aquí se reconstruye Servicio->Proveedor al cargar
   + cargarServicios(repoServ : RepositorioServicios, repoUsu : RepositorioUsuarios)
   + guardarServicios(repoServ : RepositorioServicios)
 }
@@ -116,66 +104,48 @@ class PersistenciaArchivo {
 '       CONTROLADOR
 ' ===========================
 class ControladorApp {
-  - repoUsuarios   : RepositorioUsuarios
-  - repoServicios  : RepositorioServicios
-  - persistencia   : PersistenciaArchivo
-  - vistaPrincipal : MainVista
+  - usuarioLogueado : Usuario
   + iniciar()
-  ' --- Registro separado (según vistas) ---
-  + registrarVisitante()
-  + registrarProveedor()
-  + iniciarSesionProveedor(email : String, contraseña : String)
-  + añadirServicio()
-  + modificarServicio()
-  + eliminarServicio()
-  + mostrarCatalogo()
-  + buscarPorZona(zona : String) : List<Servicio>
-  + buscarPorCategoria(cat : Categoria) : List<Servicio>
-
-  ' --- Búsqueda por texto (barra) ---
-  + buscarPorTexto(texto : String) : List<Servicio>
-  + verDetalleServicio(serv : Servicio)
-  + contactarProveedor(serv : Servicio)
-  + actualizarPerfilProveedor(p : Proveedor)
-  + verServiciosPropios(p : Proveedor) : List<Servicio>
+  + registrarVisitante(...)
+  + registrarProveedor(...)
+  + iniciarSesionProveedor(...)
+  + iniciarSesionVisitante(...)
+  + cerrarSesion()
+  + anadirServicio(...)
+  + modificarServicio(...)
+  + eliminarServicio(...)
+  + mostrarCatalogoCompleto()
+  + buscarPorZona(...)
+  + buscarPorCategoria(...)
+  + buscarPorTexto(...)
 }
 
 ' ===========================
-'        VISTA
+'        VISTAS PRINCIPALES
 ' ===========================
 class MainVista {
-  + mostrarMenuPrincipal()
-  + mostrarPantallaInicioSesion()
-  + mostrarFormularioRegistroVisitante()
-  + mostrarFormularioRegistroProveedor()
-  + mostrarPantallaLoginProveedor()
-  + mostrarPanelVisitante(lista : List<Servicio>)
-  + mostrarPanelProveedor(lista : List<Servicio>)
-  + mostrarFormularioServicio(serv : Servicio)
-  + mostrarDetalleServicio(serv : Servicio)
-  + mostrarPerfilProveedor(p : Proveedor)
-
-  + mostrarMensaje(mensaje : String)
+  + cambiarVista(nombreVista : String)
+  + mostrarPanelVisitante(...)
+  + mostrarDetalleServicio(...)
+  + mostrarPanelProveedor(...)
+  + mostrarPerfilProveedor(...)
 }
-
 ' ===========================
-'     RELACIONES (MODELO)
+'     RELACIONES
 ' ===========================
 Usuario <|-- Proveedor
 Usuario <|-- Visitante
 
-Proveedor "1" o-- "0..*" Servicio : ofrece >
-Servicio "1" --> "1" Proveedor : pertenece a >
+Servicio "0..*" --> "1" Proveedor : pertenece a >
+Servicio --> Categoria
 
-RepositorioUsuarios o-- Usuario
-RepositorioServicios o-- Servicio
+RepositorioUsuarios "1" o-- "*" Usuario
+RepositorioServicios "1" o-- "*" Servicio
 
 ControladorApp --> RepositorioUsuarios
 ControladorApp --> RepositorioServicios
 ControladorApp --> PersistenciaArchivo
 ControladorApp --> MainVista
-
-PersistenciaArchivo --> RepositorioUsuarios
-PersistenciaArchivo --> RepositorioServicios
+ControladorApp --> GuiaBreteException
 
 @enduml
