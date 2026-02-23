@@ -5,6 +5,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Panel de interfaz gráfica que permite a los proveedores registrar un nuevo servicio.
+ * <p>El formulario organiza los datos en una cuadrícula lógica utilizando {@link GridBagLayout},
+ * proporcionando campos para nombre, categoría, zona, contacto, horario y una descripción detallada.</p>
+ * <p>Incluye validaciones preventivas antes de enviar los datos al {@link com.guiabrete.controller.ControladorApp}.</p>
+ * * @author Grupo 04
+ * @version 1.0
+ */
 public class PanelAnadirServicio extends JPanel {
     private JTextField txtNombre, txtZona, txtHorario, txtContacto;
     private JComboBox<Categoria> cbCategoria;
@@ -12,6 +20,12 @@ public class PanelAnadirServicio extends JPanel {
     private JButton btnGuardar, btnCancelar;
     private MainVista ventana;
 
+    /**
+     * Constructor del panel de registro de servicios.
+     * <p>Configura el diseño base mediante {@link BorderLayout} y establece márgenes
+     * externos (padding) para una mejor presentación visual.</p>
+     * * @param ventana Referencia a la {@link MainVista} para gestionar la navegación y alertas.
+     */
     public PanelAnadirServicio(MainVista ventana) {
         this.ventana = ventana;
         setLayout(new BorderLayout());
@@ -22,6 +36,10 @@ public class PanelAnadirServicio extends JPanel {
         initFormulario();
     }
 
+    /**
+     * Inicializa la cabecera del panel.
+     * <p>Muestra el título principal de la sección y un indicador visual de ayuda al usuario.</p>
+     */
     private void initHeader() {
         JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setOpaque(false);
@@ -41,13 +59,18 @@ public class PanelAnadirServicio extends JPanel {
         add(pnlHeader, BorderLayout.NORTH);
     }
 
+    /**
+     * Construye el cuerpo del formulario y configura los eventos de los botones.
+     * <p>Utiliza {@link GridBagConstraints} para manejar la expansión de los campos
+     * y la ocupación de múltiples columnas en el caso del horario y la descripción.</p>
+     */
     private void initFormulario() {
         JPanel pnlCampos = new JPanel(new GridBagLayout());
         pnlCampos.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 15, 10, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0; // Ayuda a que los campos se expandan bien
+        gbc.weightx = 1.0;
 
         // --- FILA 1: NOMBRE Y CATEGORÍA ---
         gbc.gridx = 0; gbc.gridy = 0;
@@ -55,7 +78,7 @@ public class PanelAnadirServicio extends JPanel {
 
         gbc.gridx = 1;
         txtNombre = EstiloUI.crearInput();
-        txtNombre.setPreferredSize(new Dimension(200, 35)); // <-- ¡Soluciona el campo aplastado!
+        txtNombre.setPreferredSize(new Dimension(200, 35));
         pnlCampos.add(txtNombre, gbc);
 
         gbc.gridx = 2;
@@ -75,7 +98,6 @@ public class PanelAnadirServicio extends JPanel {
         gbc.gridx = 1;
         txtZona = EstiloUI.crearInput();
         txtZona.setPreferredSize(new Dimension(200, 35));
-        txtZona.setToolTipText("Tu zona se asignará automáticamente de tu perfil.");
         pnlCampos.add(txtZona, gbc);
 
         gbc.gridx = 2;
@@ -84,20 +106,18 @@ public class PanelAnadirServicio extends JPanel {
         gbc.gridx = 3;
         txtContacto = EstiloUI.crearInput();
         txtContacto.setPreferredSize(new Dimension(200, 35));
-        txtContacto.setToolTipText("Tu teléfono se asignará automáticamente de tu perfil.");
         pnlCampos.add(txtContacto, gbc);
 
-        // --- FILA 3: HORARIO (Ocupa dos columnas) ---
+        // --- FILA 3: HORARIO (Ocupa dos columnas/ancho completo) ---
         gbc.gridx = 0; gbc.gridy = 2;
         pnlCampos.add(new JLabel("HORARIO DE TRABAJO:"), gbc);
 
         gbc.gridx = 1; gbc.gridwidth = 3;
         txtHorario = EstiloUI.crearInput();
         txtHorario.setPreferredSize(new Dimension(200, 35));
-        txtHorario.setToolTipText("Tu horario se asignará automáticamente de tu perfil.");
         pnlCampos.add(txtHorario, gbc);
 
-        // --- FILA 4: DESCRIPCIÓN (Área de texto grande) ---
+        // --- FILA 4: DESCRIPCIÓN ---
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
         pnlCampos.add(new JLabel("DESCRIPCIÓN:"), gbc);
 
@@ -119,18 +139,13 @@ public class PanelAnadirServicio extends JPanel {
 
         btnGuardar = EstiloUI.crearBoton("PUBLICAR SERVICIO");
 
-        // ==========================================
-        // CABLEADO: Los botones cobran vida
-        // ==========================================
-
-        // 1. Botón Cancelar
+        // Lógica del botón Cancelar
         btnCancelar.addActionListener(e -> {
             limpiarCampos();
-            ventana.cambiarVista("panelProveedor"); // Regresa al dashboard de Angely
+            ventana.cambiarVista("panelProveedor");
         });
 
-        // 2. Botón Guardar / Publicar
-        // 2. Botón Guardar / Publicar
+        // Lógica del botón Guardar/Publicar
         btnGuardar.addActionListener(e -> {
             String nombre = txtNombre.getText().trim();
             String desc = txtDescripcion.getText().trim();
@@ -139,14 +154,13 @@ public class PanelAnadirServicio extends JPanel {
             String contacto = txtContacto.getText().trim();
             Categoria cat = (Categoria) cbCategoria.getSelectedItem();
 
-            // Validamos que no deje campos críticos en blanco
+            // Validación de campos obligatorios
             if (nombre.isEmpty() || desc.isEmpty() || zona.isEmpty() || horario.isEmpty() || contacto.isEmpty()) {
                 ventana.mostrarMensaje("Por favor, complete todos los campos para publicar el servicio.");
                 return;
             }
 
             if (ventana.getControlador() != null) {
-                // Enviamos TODOS los datos al cerebro
                 ventana.getControlador().anadirServicio(nombre, desc, cat, zona, horario, contacto);
                 limpiarCampos();
             }
@@ -163,7 +177,10 @@ public class PanelAnadirServicio extends JPanel {
         add(pnlCampos, BorderLayout.CENTER);
     }
 
-    // --- MÉTODOS DE LIMPIEZA ---
+    /**
+     * Limpia todos los campos de texto y restablece el selector de categoría.
+     * Útil para preparar el formulario para un nuevo ingreso o tras cancelar una operación.
+     */
     public void limpiarCampos() {
         txtNombre.setText("");
         txtZona.setText("");

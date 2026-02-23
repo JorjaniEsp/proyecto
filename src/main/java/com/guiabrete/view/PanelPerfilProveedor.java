@@ -5,12 +5,28 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Panel de interfaz gráfica dedicado a la gestión y actualización del perfil de un proveedor.
+ * <p>Este componente permite al proveedor modificar su información de contacto (Teléfono),
+ * área de cobertura (Zona) y disponibilidad (Horario). Los datos de identidad base
+ * como el nombre y correo electrónico se mantienen en modo de solo lectura por seguridad.</p>
+ * * @author Grupo 04
+ * @version 1.0
+ */
 public class PanelPerfilProveedor extends JPanel {
     private JTextField txtNombre, txtTelefono, txtEmail, txtZona, txtHorario;
     private JButton btnGuardar, btnVolver;
     private MainVista ventana;
+
+    /** Almacena la referencia del proveedor que ha iniciado sesión actualmente. */
     private Proveedor proveedorActual;
 
+    /**
+     * Constructor del panel de perfil.
+     * <p>Configura el layout general y los márgenes internos para una visualización
+     * aireada y profesional, siguiendo la paleta de colores de {@link EstiloUI}.</p>
+     * * @param ventana Referencia a la {@link MainVista} para gestionar la navegación de vistas.
+     */
     public PanelPerfilProveedor(MainVista ventana) {
         this.ventana = ventana;
         setLayout(new BorderLayout());
@@ -21,6 +37,9 @@ public class PanelPerfilProveedor extends JPanel {
         initFormulario();
     }
 
+    /**
+     * Inicializa la cabecera informativa del panel.
+     */
     private void initHeader() {
         JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setOpaque(false);
@@ -40,6 +59,11 @@ public class PanelPerfilProveedor extends JPanel {
         add(pnlHeader, BorderLayout.NORTH);
     }
 
+    /**
+     * Construye los campos de entrada y los controles de acción.
+     * <p>Utiliza un {@link GridBagLayout} para organizar los campos en dos columnas
+     * temáticas (Datos Personales y Datos de Servicio) y gestiona los eventos de guardado.</p>
+     */
     private void initFormulario() {
         JPanel pnlCampos = new JPanel(new GridBagLayout());
         pnlCampos.setOpaque(false);
@@ -48,20 +72,19 @@ public class PanelPerfilProveedor extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // --- DATOS PERSONALES ---
+        // --- SECCIÓN: DATOS DE IDENTIDAD (Inhabilitados para edición directa) ---
         txtNombre = agregarCampo(pnlCampos, "NOMBRE COMPLETO:", 0, 0, gbc);
-        txtNombre.setEnabled(false); // Bloqueado por seguridad
+        txtNombre.setEnabled(false);
 
         txtEmail = agregarCampo(pnlCampos, "CORREO ELECTRÓNICO:", 1, 0, gbc);
-        txtEmail.setEnabled(false); // Bloqueado por seguridad
+        txtEmail.setEnabled(false);
 
+        // --- SECCIÓN: DATOS OPERATIVOS ---
         txtTelefono = agregarCampo(pnlCampos, "TELÉFONO / WHATSAPP:", 2, 0, gbc);
-
-        // --- DATOS DE SERVICIO ---
         txtZona = agregarCampo(pnlCampos, "ZONA DE TRABAJO:", 0, 2, gbc);
         txtHorario = agregarCampo(pnlCampos, "HORARIO DE ATENCIÓN:", 1, 2, gbc);
 
-        // --- ÁREA DE BOTONES ---
+        // --- CONFIGURACIÓN DE ACCIONES ---
         JPanel pnlAcciones = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
         pnlAcciones.setOpaque(false);
 
@@ -70,11 +93,10 @@ public class PanelPerfilProveedor extends JPanel {
 
         btnGuardar = EstiloUI.crearBoton("GUARDAR PERFIL");
 
-        // ==========================================
-        // CABLEADO: Los botones cobran vida
-        // ==========================================
+        // Regresar al dashboard del proveedor
         btnVolver.addActionListener(e -> ventana.cambiarVista("panelProveedor"));
 
+        // Validar y enviar cambios al controlador
         btnGuardar.addActionListener(e -> {
             String tel = txtTelefono.getText().trim();
             String zona = txtZona.getText().trim();
@@ -86,7 +108,6 @@ public class PanelPerfilProveedor extends JPanel {
             }
 
             if (ventana.getControlador() != null) {
-                // Mandamos a actualizar (El controlador ya tiene este método listo)
                 ventana.getControlador().actualizarPerfilProveedor(tel, zona, horario);
             }
         });
@@ -102,6 +123,15 @@ public class PanelPerfilProveedor extends JPanel {
         add(pnlCampos, BorderLayout.CENTER);
     }
 
+    /**
+     * Método auxiliar para inyectar un conjunto de etiqueta y campo de texto en el formulario.
+     * * @param panel El panel contenedor.
+     * @param etiqueta Texto descriptivo del campo.
+     * @param fila Índice de fila en el GridBag.
+     * @param columna Índice de columna inicial.
+     * @param gbc Objeto de restricciones.
+     * @return El {@link JTextField} creado para su posterior manipulación.
+     */
     private JTextField agregarCampo(JPanel panel, String etiqueta, int fila, int columna, GridBagConstraints gbc) {
         gbc.gridx = columna; gbc.gridy = fila;
         gbc.gridwidth = 1;
@@ -112,11 +142,17 @@ public class PanelPerfilProveedor extends JPanel {
 
         gbc.gridx = columna + 1;
         JTextField txt = EstiloUI.crearInput();
-        txt.setPreferredSize(new Dimension(250, 35)); // <-- Arregla el aplastamiento
+        txt.setPreferredSize(new Dimension(250, 35));
         panel.add(txt, gbc);
         return txt;
     }
 
+    /**
+     * Carga y renderiza los datos de un objeto Proveedor en el formulario.
+     * <p>Realiza un formateo visual del teléfono eliminando el prefijo internacional
+     * "506" para facilitar la lectura del usuario costarricense.</p>
+     * * @param p La instancia de {@link Proveedor} con los datos actuales.
+     */
     public void cargarDatosPerfil(Proveedor p) {
         this.proveedorActual = p;
         txtNombre.setText(p.getNombre());

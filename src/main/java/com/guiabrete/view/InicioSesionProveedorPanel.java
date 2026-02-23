@@ -4,12 +4,26 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Panel de inicio de sesión unificado para el sistema GuiaBrete.
+ * <p>Proporciona una interfaz tipo "Card" (tarjeta) centrada en pantalla donde los usuarios
+ * pueden ingresar sus credenciales. El panel permite bifurcar la sesión hacia un perfil
+ * de Proveedor o uno de Visitante mediante acciones de botones independientes.</p>
+ * * @author Grupo 04
+ * @version 1.0
+ */
 public class InicioSesionProveedorPanel extends JPanel {
     private JTextField txtEmail;
     private JPasswordField txtPassword;
     private JButton btnLoginProv, btnLoginVis, btnVolver;
     private MainVista ventana;
 
+    /**
+     * Constructor que inicializa el panel de inicio de sesión.
+     * <p>Configura el fondo general usando {@link EstiloUI#MANZANA_50} y utiliza
+     * un {@link GridBagLayout} para mantener la tarjeta de login perfectamente centrada.</p>
+     * * @param ventana Referencia a la {@link MainVista} para navegación y acceso al controlador.
+     */
     public InicioSesionProveedorPanel(MainVista ventana) {
         this.ventana = ventana;
         setLayout(new GridBagLayout());
@@ -18,10 +32,16 @@ public class InicioSesionProveedorPanel extends JPanel {
         initLoginCard();
     }
 
+    /**
+     * Inicializa y ensambla los componentes dentro de la tarjeta de inicio de sesión.
+     * <p>Utiliza un {@link BoxLayout} vertical para organizar los elementos (títulos, campos,
+     * espacios rígidos y botones) de manera uniforme.</p>
+     */
     private void initLoginCard() {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);
+        // Borde compuesto para crear elevación visual y margen interno
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(EstiloUI.MANZANA_100, 2),
                 new EmptyBorder(30, 40, 30, 40)
@@ -35,6 +55,7 @@ public class InicioSesionProveedorPanel extends JPanel {
         card.add(lblTitulo);
         card.add(Box.createRigidArea(new Dimension(0, 25)));
 
+        // Configuración de campos de entrada
         card.add(crearEtiquetaInterna("Correo Electrónico:"));
         txtEmail = EstiloUI.crearInput();
         txtEmail.setMaximumSize(new Dimension(300, 35));
@@ -55,13 +76,13 @@ public class InicioSesionProveedorPanel extends JPanel {
 
         card.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // --- BOTONES DIVIDIDOS ---
+        // --- GESTIÓN DE BOTONES ---
         btnLoginProv = EstiloUI.crearBoton("ENTRAR COMO PROVEEDOR");
         btnLoginProv.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnLoginProv.setMaximumSize(new Dimension(300, 40));
 
         btnLoginVis = EstiloUI.crearBoton("ENTRAR COMO VISITANTE");
-        btnLoginVis.setBackground(EstiloUI.MANZANA_600); // Diferenciamos el color
+        btnLoginVis.setBackground(EstiloUI.MANZANA_600);
         btnLoginVis.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnLoginVis.setMaximumSize(new Dimension(300, 40));
 
@@ -70,13 +91,14 @@ public class InicioSesionProveedorPanel extends JPanel {
         btnVolver.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnVolver.setMaximumSize(new Dimension(300, 40));
 
-        // --- CABLEADO ---
+        // --- CONFIGURACIÓN DE EVENTOS (LISTENERS) ---
+
         btnVolver.addActionListener(e -> {
             limpiarCampos();
             ventana.cambiarVista("inicio");
         });
 
-        // Evento para el Proveedor
+        // Inicio de sesión como Proveedor
         btnLoginProv.addActionListener(e -> {
             if (validarCampos()) {
                 ventana.getControlador().iniciarSesionProveedor(txtEmail.getText(), new String(txtPassword.getPassword()));
@@ -84,7 +106,7 @@ public class InicioSesionProveedorPanel extends JPanel {
             }
         });
 
-        // Evento para el Visitante
+        // Inicio de sesión como Visitante
         btnLoginVis.addActionListener(e -> {
             if (validarCampos()) {
                 ventana.getControlador().iniciarSesionVisitante(txtEmail.getText(), new String(txtPassword.getPassword()));
@@ -101,6 +123,11 @@ public class InicioSesionProveedorPanel extends JPanel {
         add(card);
     }
 
+    /**
+     * Crea una etiqueta pequeña y estilizada para los campos de entrada.
+     * @param texto El texto que mostrará la etiqueta.
+     * @return Un objeto {@link JLabel} configurado.
+     */
     private JLabel crearEtiquetaInterna(String texto) {
         JLabel lbl = new JLabel(texto);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -109,6 +136,11 @@ public class InicioSesionProveedorPanel extends JPanel {
         return lbl;
     }
 
+    /**
+     * Verifica que los campos de texto no estén vacíos antes de procesar la solicitud.
+     * Muestra un mensaje de advertencia en la vista si falta algún dato.
+     * @return {@code true} si los campos son válidos; {@code false} en caso contrario.
+     */
     private boolean validarCampos() {
         if (txtEmail.getText().isEmpty() || new String(txtPassword.getPassword()).isEmpty()) {
             ventana.mostrarMensaje("Por favor, ingresa tu correo y contraseña.");
@@ -117,6 +149,9 @@ public class InicioSesionProveedorPanel extends JPanel {
         return true;
     }
 
+    /**
+     * Restablece el contenido de los campos de texto a su estado original (vacío).
+     */
     public void limpiarCampos() {
         txtEmail.setText("");
         txtPassword.setText("");

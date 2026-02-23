@@ -6,14 +6,30 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Panel de interfaz gráfica diseñado para la edición de servicios existentes.
+ * <p>Este componente permite a los proveedores actualizar la información de sus publicaciones.
+ * Reutiliza la lógica visual de formularios mediante {@link GridBagLayout} y gestiona
+ * la precarga de datos del objeto {@link Servicio} seleccionado para su modificación.</p>
+ * * @author Grupo 04
+ * @version 1.0
+ */
 public class PanelModificarServicio extends JPanel {
     private JTextField txtNombre, txtZona, txtHorario, txtContacto;
     private JComboBox<Categoria> cbCategoria;
     private JTextArea txtDescripcion;
     private JButton btnGuardar, btnCancelar;
     private MainVista ventana;
-    private Servicio servicioAEditar; // Referencia al objeto original
 
+    /** Referencia al objeto original que está siendo editado para mantener su identidad (ID). */
+    private Servicio servicioAEditar;
+
+    /**
+     * Constructor que inicializa la estructura del panel de modificación.
+     * <p>Establece el fondo temático y los márgenes internos para mantener la consistencia
+     * visual con el resto de la aplicación.</p>
+     * * @param ventana Referencia a la {@link MainVista} para el control de navegación.
+     */
     public PanelModificarServicio(MainVista ventana) {
         this.ventana = ventana;
         setLayout(new BorderLayout());
@@ -24,6 +40,9 @@ public class PanelModificarServicio extends JPanel {
         initFormulario();
     }
 
+    /**
+     * Configura la parte superior del panel con el título de la acción.
+     */
     private void initHeader() {
         JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setOpaque(false);
@@ -43,6 +62,11 @@ public class PanelModificarServicio extends JPanel {
         add(pnlHeader, BorderLayout.NORTH);
     }
 
+    /**
+     * Construye el formulario de edición y define el comportamiento de los botones.
+     * <p>Al guardar, valida que no existan campos vacíos y delega la actualización
+     * física de los datos al controlador.</p>
+     */
     private void initFormulario() {
         JPanel pnlCampos = new JPanel(new GridBagLayout());
         pnlCampos.setOpaque(false);
@@ -117,14 +141,12 @@ public class PanelModificarServicio extends JPanel {
 
         btnGuardar = EstiloUI.crearBoton("GUARDAR CAMBIOS");
 
-        // ==========================================
-        // CABLEADO: Los botones cobran vida
-        // ==========================================
-
+        // ACCIÓN: DESCARTAR
         btnCancelar.addActionListener(e -> {
             ventana.cambiarVista("panelProveedor");
         });
 
+        // ACCIÓN: ACTUALIZAR
         btnGuardar.addActionListener(e -> {
             String nombre = txtNombre.getText().trim();
             Categoria cat = (Categoria) cbCategoria.getSelectedItem();
@@ -139,7 +161,6 @@ public class PanelModificarServicio extends JPanel {
             }
 
             if (ventana.getControlador() != null && servicioAEditar != null) {
-                // Se envía todo al controlador para que lo procese y lo guarde en TXT
                 ventana.getControlador().modificarServicio(servicioAEditar, nombre, desc, cat, zona, horario, contacto);
             }
         });
@@ -155,6 +176,9 @@ public class PanelModificarServicio extends JPanel {
         add(pnlContenido(pnlCampos), BorderLayout.CENTER);
     }
 
+    /**
+     * Envoltura interna para centrar el formulario.
+     */
     private JPanel pnlContenido(JPanel pnlForm) {
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setOpaque(false);
@@ -162,7 +186,12 @@ public class PanelModificarServicio extends JPanel {
         return wrapper;
     }
 
-    // --- LÓGICA DE CARGA ---
+    /**
+     * Carga la información de un servicio específico en los campos del formulario.
+     * <p>Realiza una limpieza visual del código de país "506" en el teléfono para
+     * facilitar la edición al usuario.</p>
+     * * @param s El objeto {@link Servicio} cuyos datos se van a editar.
+     */
     public void cargarDatosServicio(Servicio s) {
         this.servicioAEditar = s;
         txtNombre.setText(s.getNombreServ());
@@ -170,7 +199,7 @@ public class PanelModificarServicio extends JPanel {
         txtZona.setText(s.getZona());
         txtHorario.setText(s.getHorario());
 
-        // Limpiamos el código "506" visualmente si está para que sea más fácil de editar
+        // Normalización visual para el usuario
         String tel = s.getContacto();
         if(tel != null && tel.startsWith("506")) {
             tel = tel.substring(3);

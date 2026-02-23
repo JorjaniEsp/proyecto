@@ -9,22 +9,44 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel principal para el perfil de Visitante o Invitado.
+ * <p>Esta vista funciona como el catálogo central de servicios de la aplicación.
+ * Se divide en dos secciones principales:</p>
+ * <ul>
+ * <li><b>Barra Lateral (Filtros):</b> Permite al usuario segmentar servicios por zona geográfica,
+ * categoría técnica o limpiar las búsquedas actuales.</li>
+ * <li><b>Área de Contenido:</b> Un espacio dinámico con un buscador textual y una cuadrícula
+ * de resultados que renderiza tarjetas detalladas de servicios.</li>
+ * </ul>
+ * * @author Grupo 04
+ * @version 1.0
+ */
 public class PanelPrincipalVisitante extends JPanel {
 
     private MainVista ventana;
-    private JPanel panelResultados; // Aquí pintaremos las tarjetas
+    /** Contenedor dinámico donde se inyectan las tarjetas de servicios. */
+    private JPanel panelResultados;
+    /** Campo de entrada para búsquedas textuales por palabra clave. */
     private JTextField txtBuscador;
 
+    /**
+     * Constructor que inicializa la interfaz del catálogo.
+     * <p>Configura el {@link BorderLayout} principal y ensambla los subpaneles de
+     * filtros (Oeste) y resultados (Centro). Implementa diálogos modales para la
+     * selección de filtros de zona y categoría.</p>
+     * * @param ventana Referencia a la {@link MainVista} para navegación y acceso al controlador.
+     */
     public PanelPrincipalVisitante(MainVista ventana) {
         this.ventana = ventana;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
         // =================================================================================
-        // 1. PANEL LATERAL IZQUIERDO (Filtros)
+        // 1. PANEL LATERAL IZQUIERDO (Filtros y Navegación)
         // =================================================================================
         JPanel panelIzquierdo = new JPanel();
-        panelIzquierdo.setPreferredSize(new Dimension(250, 0)); // Ancho fijo
+        panelIzquierdo.setPreferredSize(new Dimension(250, 0));
         panelIzquierdo.setBackground(EstiloUI.MANZANA_50);
         panelIzquierdo.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, EstiloUI.MANZANA_500));
         panelIzquierdo.setLayout(new GridBagLayout());
@@ -34,17 +56,15 @@ public class PanelPrincipalVisitante extends JPanel {
         gbcIzq.fill = GridBagConstraints.HORIZONTAL;
         gbcIzq.gridx = 0;
 
-        // A. Logo
         JLabel logoLabel = new JLabel("<html><h2 style='color:#1c4b23'>Guía-Brete</h2></html>", SwingConstants.CENTER);
 
-        // B. Botones de Filtros
+        // Botones de acción de filtrado
         JButton btnZona = EstiloUI.crearBoton("BUSCAR POR ZONA");
         JButton btnCategoria = EstiloUI.crearBoton("BUSCAR POR CATEGORÍA");
         JButton btnLimpiar = EstiloUI.crearBoton("LIMPIAR FILTROS");
-
         btnLimpiar.setBackground(EstiloUI.MANZANA_900);
 
-        // --- CABLEADO DE FILTROS ---
+        // --- LÓGICA DE FILTRADO ---
         btnZona.addActionListener(e -> {
             String zona = JOptionPane.showInputDialog(this, "Ingrese la zona a buscar:");
             if (zona != null && !zona.isEmpty() && ventana.getControlador() != null) {
@@ -53,71 +73,51 @@ public class PanelPrincipalVisitante extends JPanel {
         });
 
         btnCategoria.addActionListener(e -> {
-            // Genera una lista desplegable con tu Enum "Categoria"
             Categoria[] categorias = Categoria.values();
             Categoria seleccion = (Categoria) JOptionPane.showInputDialog(
-                    this,
-                    "Seleccione la categoría que busca:",
-                    "Filtrar por Categoría",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    categorias,
-                    categorias[0]
-            );
+                    this, "Seleccione la categoría:", "Filtrar por Categoría",
+                    JOptionPane.QUESTION_MESSAGE, null, categorias, categorias[0]);
 
-            // Si el usuario seleccionó una categoría y le dio a OK
             if (seleccion != null && ventana.getControlador() != null) {
                 ventana.getControlador().buscarPorCategoria(seleccion);
             }
         });
 
         btnLimpiar.addActionListener(e -> {
-            txtBuscador.setText(""); // Limpiamos la barra
+            txtBuscador.setText("");
             if (ventana.getControlador() != null) {
                 ventana.getControlador().mostrarCatalogoCompleto();
             }
         });
 
-        // Botón Salir / Volver
         JButton btnVolver = new JButton("VOLVER AL INICIO");
-        btnVolver.setForeground(EstiloUI.MANZANA_900);
-        btnVolver.setContentAreaFilled(false);
-        btnVolver.setBorderPainted(false);
         btnVolver.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnVolver.addActionListener(e -> ventana.cambiarVista("inicio"));
 
-        // Agregar al panel izquierdo
         gbcIzq.gridy = 0; panelIzquierdo.add(logoLabel, gbcIzq);
-        gbcIzq.insets = new Insets(40, 15, 10, 15);
         gbcIzq.gridy = 1; panelIzquierdo.add(btnZona, gbcIzq);
-        gbcIzq.insets = new Insets(10, 15, 10, 15);
         gbcIzq.gridy = 2; panelIzquierdo.add(btnCategoria, gbcIzq);
         gbcIzq.gridy = 3; panelIzquierdo.add(btnLimpiar, gbcIzq);
-
         gbcIzq.weighty = 1.0;
         gbcIzq.anchor = GridBagConstraints.SOUTH;
         gbcIzq.gridy = 4; panelIzquierdo.add(btnVolver, gbcIzq);
 
         // =================================================================================
-        // 2. PANEL DERECHO (Contenido Principal)
+        // 2. PANEL DERECHO (Barra de búsqueda y Scroll de resultados)
         // =================================================================================
         JPanel panelDerecho = new JPanel(new BorderLayout());
         panelDerecho.setBackground(Color.WHITE);
 
-        // A. Barra Superior (Buscador)
+        // Barra Superior de búsqueda textual
         JPanel barraSuperior = new JPanel(new BorderLayout(10, 10));
         barraSuperior.setBackground(Color.WHITE);
         barraSuperior.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         txtBuscador = EstiloUI.crearInput();
-        txtBuscador.setText(""); // Nace vacío, tal como pediste
-
-        // Botón Lupa (Búsqueda por texto)
         JButton btnBuscar = new JButton("🔍");
         btnBuscar.setBackground(EstiloUI.MANZANA_500);
         btnBuscar.setForeground(Color.WHITE);
         btnBuscar.addActionListener(e -> {
-            // Conexión real con el controlador
             if (ventana.getControlador() != null) {
                 ventana.getControlador().buscarPorTexto(txtBuscador.getText().trim());
             }
@@ -126,18 +126,16 @@ public class PanelPrincipalVisitante extends JPanel {
         JPanel panelBuscador = new JPanel(new BorderLayout());
         panelBuscador.add(txtBuscador, BorderLayout.CENTER);
         panelBuscador.add(btnBuscar, BorderLayout.EAST);
-
-        // El botón de perfil fue eliminado
         barraSuperior.add(panelBuscador, BorderLayout.CENTER);
 
-        // B. Área de Resultados (Scroll con Grid de Tarjetas)
+        // Área de resultados con Grid dinámico (2 columnas)
         panelResultados = new JPanel(new GridLayout(0, 2, 20, 20));
         panelResultados.setBackground(Color.WHITE);
         panelResultados.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JScrollPane scrollPane = new JScrollPane(panelResultados);
         scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Scroll más fluido
 
         panelDerecho.add(barraSuperior, BorderLayout.NORTH);
         panelDerecho.add(scrollPane, BorderLayout.CENTER);
@@ -148,6 +146,12 @@ public class PanelPrincipalVisitante extends JPanel {
         cargarServiciosDePrueba();
     }
 
+    /**
+     * Actualiza el área de resultados con una nueva lista de servicios.
+     * <p>Este método es invocado por el controlador tras realizar un filtrado
+     * o búsqueda. Limpia el contenedor actual y reconstruye las tarjetas.</p>
+     * * @param servicios Lista de objetos {@link Servicio} a renderizar.
+     */
     public void cargarServicios(List<Servicio> servicios) {
         panelResultados.removeAll();
 
@@ -165,11 +169,17 @@ public class PanelPrincipalVisitante extends JPanel {
         panelResultados.repaint();
     }
 
+    /**
+     * Crea un componente visual (Tarjeta) para representar un servicio individual.
+     * <p>La tarjeta incluye el nombre, una etiqueta de zona, descripción resumida
+     * y un botón de acceso a detalles.</p>
+     * * @param s El objeto {@link Servicio} a encapsular en la tarjeta.
+     * @return Un {@link JPanel} estilizado con la información del servicio.
+     */
     private JPanel crearTarjetaServicio(Servicio s) {
         JPanel tarjeta = new JPanel();
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
         tarjeta.setBackground(EstiloUI.MANZANA_50);
-
         tarjeta.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(EstiloUI.MANZANA_500, 2, true),
                 new EmptyBorder(15, 15, 15, 15)
@@ -196,15 +206,11 @@ public class PanelPrincipalVisitante extends JPanel {
         txtDesc.setEditable(false);
         txtDesc.setBackground(EstiloUI.MANZANA_50);
         txtDesc.setFont(EstiloUI.FONT_TEXTO);
-        txtDesc.setBorder(new EmptyBorder(10, 0, 10, 0));
 
         JButton btnDetalles = new JButton("VER DETALLES");
         btnDetalles.setBackground(EstiloUI.MANZANA_900);
         btnDetalles.setForeground(Color.WHITE);
-        btnDetalles.setFocusPainted(false);
         btnDetalles.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnDetalles.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         btnDetalles.addActionListener(e -> {
             if (ventana.getControlador() != null) {
                 ventana.getControlador().verDetalleServicio(s);
@@ -216,12 +222,14 @@ public class PanelPrincipalVisitante extends JPanel {
         tarjeta.add(txtDesc);
         tarjeta.add(Box.createVerticalStrut(10));
         tarjeta.add(btnDetalles);
-
         tarjeta.setPreferredSize(new Dimension(300, 180));
 
         return tarjeta;
     }
 
+    /**
+     * Muestra un mensaje de bienvenida o estado inicial en el área de resultados.
+     */
     private void cargarServiciosDePrueba() {
         panelResultados.removeAll();
         JLabel lblInicio = new JLabel("<html><center>Bienvenido al Catálogo.<br>Usa los filtros o busca un servicio.</center></html>", SwingConstants.CENTER);

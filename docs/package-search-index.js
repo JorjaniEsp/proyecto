@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.guiabrete"},{"l":"com.guiabrete.controller"},{"l":"com.guiabrete.model"},{"l":"com.guiabrete.view"}];updateSearchResults();
