@@ -91,8 +91,6 @@ public class InicioSesionProveedorPanel extends JPanel {
         btnVolver.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnVolver.setMaximumSize(new Dimension(300, 40));
 
-        // --- CONFIGURACIÓN DE EVENTOS (LISTENERS) ---
-
         btnVolver.addActionListener(e -> {
             limpiarCampos();
             ventana.cambiarVista("inicio");

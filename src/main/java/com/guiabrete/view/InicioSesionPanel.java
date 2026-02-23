@@ -62,9 +62,6 @@ public class InicioSesionPanel extends JPanel {
         gbcLeft.gridy = 1;
         panelIzquierdo.add(btnLogin, gbcLeft);
 
-        // =================================================================================
-        // 2. PANEL DERECHO (Principal: Identidad y Nuevos Usuarios)
-        // =================================================================================
         JPanel panelDerecho = new JPanel();
         panelDerecho.setBackground(Color.WHITE);
         panelDerecho.setLayout(new GridBagLayout());
@@ -107,10 +104,6 @@ public class InicioSesionPanel extends JPanel {
         gbcRight.gridy = 1; panelDerecho.add(btnRegistroProv, gbcRight);
         gbcRight.gridy = 2; panelDerecho.add(btnVisitante, gbcRight);
         gbcRight.gridy = 3; panelDerecho.add(btnInvitado, gbcRight);
-
-        // =================================================================================
-        // 3. ENSAMBLAJE FINAL
-        // =================================================================================
 
         // Adición del panel lateral (proporción 30%)
         gbc.gridx = 0;

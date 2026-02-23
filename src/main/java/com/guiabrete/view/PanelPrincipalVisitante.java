@@ -42,9 +42,6 @@ public class PanelPrincipalVisitante extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-        // =================================================================================
-        // 1. PANEL LATERAL IZQUIERDO (Filtros y Navegación)
-        // =================================================================================
         JPanel panelIzquierdo = new JPanel();
         panelIzquierdo.setPreferredSize(new Dimension(250, 0));
         panelIzquierdo.setBackground(EstiloUI.MANZANA_50);
@@ -102,9 +99,6 @@ public class PanelPrincipalVisitante extends JPanel {
         gbcIzq.anchor = GridBagConstraints.SOUTH;
         gbcIzq.gridy = 4; panelIzquierdo.add(btnVolver, gbcIzq);
 
-        // =================================================================================
-        // 2. PANEL DERECHO (Barra de búsqueda y Scroll de resultados)
-        // =================================================================================
         JPanel panelDerecho = new JPanel(new BorderLayout());
         panelDerecho.setBackground(Color.WHITE);
 

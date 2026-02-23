@@ -63,10 +63,6 @@ public class ControladorApp {
         }
     }
 
-    // =========================================================================
-    //                            REGIÓN: AUTENTICACIÓN
-    // =========================================================================
-
     /**
      * Registra un nuevo proveedor en el sistema y persiste los cambios.
      * * @param nombre Nombre completo del proveedor.
@@ -151,10 +147,6 @@ public class ControladorApp {
         this.usuarioLogueado = null;
         vistaPrincipal.cambiarVista("inicio");
     }
-
-    // =========================================================================
-    //                         REGIÓN: SERVICIOS (PROVEEDOR)
-    // =========================================================================
 
     /**
      * Crea y publica un nuevo servicio vinculado al proveedor logueado.
@@ -264,10 +256,6 @@ public class ControladorApp {
             }
         }
     }
-
-    // =========================================================================
-    //                            REGIÓN: CATÁLOGO (VISITANTE)
-    // =========================================================================
 
     /**
      * Obtiene todos los servicios disponibles y los muestra en el panel del visitante.
